@@ -2,32 +2,15 @@ import 'package:curtainslide/firebase_auth_implementation/firebase_auth_services
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key, required this.title});
 
-  final String title;
-
-  @override
-  State<RegisterPage> createState() => _RegisterPageState();
-}
-
-class _RegisterPageState extends State<RegisterPage> {
-  @override
-  Widget build(BuildContext context) {
-    return RegisterPageWidget(title: widget.title);
-  }
-}
-
-class RegisterPageWidget extends StatefulWidget {
-  const RegisterPageWidget({super.key, required this.title});
-
-  final String title;
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<RegisterPageWidget> createState() => _RegisterPageWidgetState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterPageWidgetState extends State<RegisterPageWidget> {
+class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
 
@@ -48,7 +31,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(widget.title),
+        title: Text("Login"),
         foregroundColor: Colors.white,
       ),
       body: Center(

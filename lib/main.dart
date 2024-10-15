@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'registerPage.dart';
+import 'loginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +33,7 @@ class BufferPage extends StatefulWidget {
 class _BufferPageState extends State<BufferPage> {
   @override
   Widget build(BuildContext context) {
-    return const RegisterPage(title: 'Login');
+    return const LoginPage();
   }
 }
 
