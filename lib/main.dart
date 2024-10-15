@@ -1,3 +1,4 @@
+import 'package:curtainslide/homePage.dart';
 import 'package:flutter/material.dart';
 import 'loginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,7 +34,7 @@ class BufferPage extends StatefulWidget {
 class _BufferPageState extends State<BufferPage> {
   @override
   Widget build(BuildContext context) {
-    return const LoginPage();
+    return const HomePage();
   }
 }
 
