@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "390971340846",
+    "project_id": "curtainslide-test",
+    "storage_bucket": "curtainslide-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390971340846:android:ddc7d0c9958b53946e47bf",
+        "android_client_info": {
+          "package_name": "com.example.curtainslide"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUL07S13XLT1Hcz714BvhkXr3TgncRuBQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
