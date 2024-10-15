@@ -35,7 +35,7 @@ class BufferPage extends StatefulWidget {
 class _BufferPageState extends State<BufferPage> {
   @override
   Widget build(BuildContext context) {
-    return RegisterPage(title: 'CurtainSlide');
+    return const RegisterPage(title: 'Login');
   }
 }
 

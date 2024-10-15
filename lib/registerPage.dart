@@ -1,3 +1,5 @@
+import 'package:curtainslide/firebase_auth_implementation/firebase_auth_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -28,6 +30,18 @@ class RegisterPageWidget extends StatefulWidget {
 class _RegisterPageWidgetState extends State<RegisterPageWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
+
+  final FirebaseAuthServices _auth = FirebaseAuthServices();
+
+  TextEditingController _ctnsldEmailController = TextEditingController();
+  TextEditingController _ctnsldPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _ctnsldEmailController.dispose();
+    _ctnsldPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,16 +85,16 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                     Container(
                       margin: const EdgeInsets.fromLTRB(40, 8, 40, 0),
                       child: TextFormField(
+                        controller: _ctnsldEmailController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: "CurtainSlide ID",
+                          labelText: "CurtainSlide Email",
                         ),
                         validator: (String? value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter a CurtainSlide ID';
-                          } else if (!value
-                              .startsWith(RegExp(r'^ctnlsd-\d{9}$'))) {
-                            return 'Please enter a valid CurtainSlide ID';
+                            return 'Please enter a CurtainSlide Email';
+                          } else if (!value.endsWith("ctnsld.co")) {
+                            return 'Please enter a valid CurtainSlide Email';
                           }
                           return null;
                         },
@@ -89,6 +103,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                     Container(
                       margin: const EdgeInsets.fromLTRB(40, 8, 40, 0),
                       child: TextFormField(
+                        controller: _ctnsldPasswordController,
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(),
                           labelText: "CurtainSlide Password",
@@ -120,7 +135,8 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                         onPressed: () {
                           // Validate returns true if the form is valid, or false otherwise.
                           if (_formKey.currentState!.validate()) {
-                            // Process data.
+                            print("Everything is valid. Now go auth.");
+                            _ctnsldSignIn();
                           }
                         },
                         style: ButtonStyle(
@@ -152,5 +168,17 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
         ),
       ),
     );
+  }
+  void _ctnsldSignIn() async {
+    String email = _ctnsldEmailController.text;
+    String password = _ctnsldPasswordController.text;
+
+    User? user = await _auth.signInCtnSldCredentials(email, password);
+
+    if (user != null){
+      print("${email} has successfully logged in.");
+    } else {
+      print("An internal error occured.");
+    }
   }
 }
