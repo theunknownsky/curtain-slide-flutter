@@ -19,8 +19,8 @@ class _HomePageState extends State<HomePage> {
   void _onBotNavBarItemTapped(int index){
     setState(() {
       _selectedIndex = index;
+      _selectedBotNavBarItem();
     });
-
     if (index == 0) {
       print("Schedule selected");
     } else if (index == 1) {
@@ -72,13 +72,28 @@ class _HomePageState extends State<HomePage> {
       );
     });
   }
+  String appBarTitle = "CurtainSlide/Schedule";
+  void _selectedBotNavBarItem(){
+    setState(() {
+      if (_selectedIndex == 0){
+        appBarTitle = "CurtainSlide/Schedule";
+      } else if (_selectedIndex == 1){
+        appBarTitle = "CurtainSlide/LED";
+      } else if (_selectedIndex == 2){
+        appBarTitle = "CurtainSlide/Curtain";
+      } else if (_selectedIndex == 3){
+        appBarTitle = "CurtainSlide/Account";
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text("CurtainSlide - Schedule"),
+        title: Text(appBarTitle),
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
