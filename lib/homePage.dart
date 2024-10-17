@@ -1,3 +1,7 @@
+import 'package:curtainslide/bottomNavBarItems/account.dart';
+import 'package:curtainslide/bottomNavBarItems/curtain.dart';
+import 'package:curtainslide/bottomNavBarItems/led.dart';
+import 'package:curtainslide/bottomNavBarItems/schedule.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -7,8 +11,9 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+List<Widget> _listOfSchedule = [];
+
 class _HomePageState extends State<HomePage> {
-  List<Widget> _listOfSchedule = [];
   int _selectedIndex = 0;
 
   TextStyle _schedTextStyle = TextStyle(
@@ -87,7 +92,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,20 +100,19 @@ class _HomePageState extends State<HomePage> {
         title: Text(appBarTitle),
         foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: _listOfSchedule, // _listItems
-        ),
-        padding: EdgeInsets.symmetric(vertical: 2.0),
-      ),
-      floatingActionButton: FloatingActionButton(
+      body: (_selectedIndex == 0) ? ScheduleWidget(listOfSched: _listOfSchedule,) :
+            (_selectedIndex == 1) ? LEDWidget() :
+            (_selectedIndex == 2) ? CurtainWidget() :
+            AccountWidget() 
+      ,
+      floatingActionButton: (_selectedIndex == 0) ? FloatingActionButton(
         onPressed: _addSchedule, // _addSchedule
         tooltip: 'Add Schedule',
         child: const Icon(Icons.add),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         shape: CircleBorder(eccentricity: 0.0),
-      ),
+      ) : null,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.black,
