@@ -11,7 +11,13 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+// Schedule data
 List<Widget> _listOfSchedule = [];
+
+// LED data
+bool ledState = false;
+double currentBrightness = 5;
+ColorLabel? selectedColor;
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
@@ -101,7 +107,7 @@ class _HomePageState extends State<HomePage> {
         foregroundColor: Colors.white,
       ),
       body: (_selectedIndex == 0) ? ScheduleWidget(listOfSched: _listOfSchedule,) :
-            (_selectedIndex == 1) ? LEDWidget() :
+            (_selectedIndex == 1) ? LEDWidget(ledState: ledState, currentBrightness: currentBrightness, selectedColor: selectedColor,) :
             (_selectedIndex == 2) ? CurtainWidget() :
             AccountWidget() 
       ,
