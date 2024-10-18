@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class LEDWidget extends StatefulWidget {
   const LEDWidget({super.key, required this.ledState, required this.currentBrightness, required this.selectedColor});
@@ -40,6 +41,10 @@ class _LEDWidgetState extends State<LEDWidget> {
       ledState = value;
       print("Current LED State: ${ledState}");
     });
+    FirebaseFirestore.instance
+        .collection('users') // Replace with your collection name
+        .doc(FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
+        .update({'ledInfo.ledState': ledState});
   }
 
   void _brightnessChange(double value) {
