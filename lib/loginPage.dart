@@ -14,6 +14,8 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
 
+  String wrongCreds = "";
+
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
   TextEditingController _ctnsldEmailController = TextEditingController();
@@ -145,7 +147,15 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
-              )
+              ),
+              Container(
+                child: Text(
+                  wrongCreds,
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -166,7 +176,9 @@ class _LoginPageState extends State<LoginPage> {
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
     } else {
-      print("An internal error occured.");
+     setState(() {
+       wrongCreds = "Wrong credentials.";
+     });
     }
   }
 }
