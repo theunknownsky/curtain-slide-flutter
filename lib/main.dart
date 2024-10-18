@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'loginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,9 +34,35 @@ class BufferPage extends StatefulWidget {
 }
 
 class _BufferPageState extends State<BufferPage> {
+
+  bool isLoggedIn() {
+    final user = FirebaseAuth.instance.currentUser;
+    return user != null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const HomePage();
+    // Navigate to either home or login page based on user state
+    Future.microtask(() {
+      if (isLoggedIn()) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
+      }
+    });
+
+    // While redirecting, show a loading screen
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }
 

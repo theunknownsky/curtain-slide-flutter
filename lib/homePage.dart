@@ -83,6 +83,7 @@ class _HomePageState extends State<HomePage> {
       );
     });
   }
+  
   String appBarTitle = "CurtainSlide/Schedule";
   void _selectedBotNavBarItem(){
     setState(() {

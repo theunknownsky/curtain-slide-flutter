@@ -1,7 +1,7 @@
 import 'package:curtainslide/firebase_auth_implementation/firebase_auth_services.dart';
+import 'package:curtainslide/homePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -152,14 +152,19 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
   void _ctnsldSignIn() async {
     String email = _ctnsldEmailController.text;
     String password = _ctnsldPasswordController.text;
 
     User? user = await _auth.signInCtnSldCredentials(email, password);
 
-    if (user != null){
+    if (user != null) {
       print("${email} has successfully logged in.");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
     } else {
       print("An internal error occured.");
     }
