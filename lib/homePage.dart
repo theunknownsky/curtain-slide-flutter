@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curtainslide/bottomNavBarItems/account.dart';
 import 'package:curtainslide/bottomNavBarItems/curtain.dart';
 import 'package:curtainslide/bottomNavBarItems/led.dart';
 import 'package:curtainslide/bottomNavBarItems/schedule.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,12 +24,23 @@ ColorLabel? selectedColor;
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
+  Future<Map<String, dynamic>>? ledInfo;
+
   TextStyle _schedTextStyle = TextStyle(
     fontSize: 30,
     fontWeight: FontWeight.bold,
   );
 
-  void _onBotNavBarItemTapped(int index){
+  Future<Map<String, dynamic>> getLedInfo() async {
+    DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
+        .instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .get();
+    return doc.data()?['ledInfo'];
+  }
+
+  void _onBotNavBarItemTapped (int index) async {
     setState(() {
       _selectedIndex = index;
       _selectedBotNavBarItem();
@@ -36,6 +49,8 @@ class _HomePageState extends State<HomePage> {
       print("Schedule selected");
     } else if (index == 1) {
       print("LED selected");
+      ledInfo = getLedInfo();
+      print(ledInfo);
     } else if (index == 2) {
       print("Curtain selected");
     } else if (index == 3){

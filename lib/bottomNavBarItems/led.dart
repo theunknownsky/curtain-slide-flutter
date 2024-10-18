@@ -3,14 +3,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LEDWidget extends StatefulWidget {
-  const LEDWidget({super.key, required this.ledState, required this.currentBrightness, required this.selectedColor});
+  const LEDWidget(
+      {super.key,
+      required this.ledState,
+      required this.currentBrightness,
+      required this.selectedColor});
 
   final bool ledState; // to be changed from firebase
   final double currentBrightness;
   final ColorLabel? selectedColor;
 
   @override
-  State<LEDWidget> createState() => _LEDWidgetState(ledState: this.ledState, currentBrightness: this.currentBrightness, selectedColor: this.selectedColor);
+  State<LEDWidget> createState() => _LEDWidgetState(
+      ledState: ledState,
+      currentBrightness: currentBrightness,
+      selectedColor: selectedColor);
 }
 
 enum ColorLabel {
@@ -28,14 +35,26 @@ enum ColorLabel {
 }
 
 class _LEDWidgetState extends State<LEDWidget> {
-  _LEDWidgetState({required this.ledState, required this.currentBrightness, required this.selectedColor});
-
+  _LEDWidgetState(
+      {required this.ledState,
+      required this.currentBrightness,
+      required this.selectedColor});
 
   final TextStyle _tStyle = TextStyle(fontSize: 22);
   TextEditingController colorController = TextEditingController();
   bool ledState; // to be changed from firebase
   double currentBrightness;
   ColorLabel? selectedColor;
+
+  Future<Map<String, dynamic>> getLedInfo() async {
+    DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
+        .instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .get();
+    return doc.data()?['ledInfo'];
+  }
+
   void _ledChange(bool value) {
     setState(() {
       ledState = value;
@@ -43,7 +62,8 @@ class _LEDWidgetState extends State<LEDWidget> {
     });
     FirebaseFirestore.instance
         .collection('users') // Replace with your collection name
-        .doc(FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
+        .doc(
+            FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
         .update({'ledInfo.ledState': ledState});
   }
 
@@ -52,6 +72,11 @@ class _LEDWidgetState extends State<LEDWidget> {
       currentBrightness = value;
       print("Current brightness: ${currentBrightness}");
     });
+    FirebaseFirestore.instance
+        .collection('users') // Replace with your collection name
+        .doc(
+            FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
+        .update({'ledInfo.ledBrightness': currentBrightness});
   }
 
   @override
