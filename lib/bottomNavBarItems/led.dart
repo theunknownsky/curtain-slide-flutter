@@ -118,7 +118,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                       inactiveThumbColor: Color(0xFF191919),
                       inactiveTrackColor: Color(0xFF383838),
                       onChanged: _ledChange,
-                    )
+                    ),
                   ],
                 ),
                 Container(
@@ -159,39 +159,58 @@ class _LEDWidgetState extends State<LEDWidget> {
                     ),
                     AbsorbPointer(
                       absorbing: !ledState,
-                      child: DropdownMenu<String>(
-                        initialSelection: "Test 1",
-                        onSelected: (value) {
-                          _colorChange(value!);
-                        },
-                        dropdownMenuEntries: [
-                          DropdownMenuEntry(value: "Red-FF0000", label: "Red", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
-                          DropdownMenuEntry(
-                              value: "Orange-FFA500", label: "Orange", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
-                          DropdownMenuEntry(
-                              value: "Yellow-FFFF00", label: "Yellow", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
-                          DropdownMenuEntry(
-                              value: "Green-008000", label: "Green", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
-                          DropdownMenuEntry(
-                              value: "Blue-0000FF", label: "Blue", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
-                          DropdownMenuEntry(
-                              value: "Indigo-4B0082", label: "Indigo", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
-                          DropdownMenuEntry(
-                              value: "Violet-EE82EE", label: "Violet", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
-                        ],
-                        hintText: selectedColor,
-                        inputDecorationTheme: InputDecorationTheme(
-                          fillColor: Color(0xFF383838),
-                          filled: true,
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4)
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF383838),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        menuStyle: MenuStyle(
-                          backgroundColor: WidgetStatePropertyAll(Color(0xFF383838)),
-                          padding: WidgetStatePropertyAll(EdgeInsets.fromLTRB(4, 4, 4, 4)),
+                        padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        child: DropdownButton<String>(
+                          hint: Text(
+                            selectedColor,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                          style: TextStyle(fontSize: 16),
+                          dropdownColor: Color(0xFF383838),
+                          iconSize: 36,
+                          borderRadius: BorderRadius.circular(10),
+                          onChanged: (String? value) {
+                            _colorChange(value!);
+                            print(value);
+                          },
+                          items: [
+                            DropdownMenuItem(
+                              value: "Red-FF0000",
+                              child: Text("Red"),
+                            ),
+                            DropdownMenuItem(
+                              value: "Orange-FFA500",
+                              child: Text("Orange"),
+                            ),
+                            DropdownMenuItem(
+                              value: "Yellow-FFFF00",
+                              child: Text("Yellow"),
+                            ),
+                            DropdownMenuItem(
+                              value: "Green-008000",
+                              child: Text("Green"),
+                            ),
+                            DropdownMenuItem(
+                              value: "Blue-0000FF",
+                              child: Text("Blue"),
+                            ),
+                            DropdownMenuItem(
+                              value: "Indigo-4B0082",
+                              child: Text("Indigo"),
+                            ),
+                            DropdownMenuItem(
+                              value: "Violet-EE82EE",
+                              child: Text("Violet"),
+                            ),
+                          ],
                         ),
                       ),
                     )
@@ -218,33 +237,6 @@ class _LEDWidgetState extends State<LEDWidget> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Color(0xFF191919),
-            ),
-          ),
-          AbsorbPointer(
-            absorbing: !ledState,
-            child: Row(
-              children: [
-                Text(
-                  "LED Color",
-                  style: _tStyle,
-                ),
-                DropdownMenu<String>(
-                  initialSelection: "Test 1",
-                  onSelected: (value) {
-                    _colorChange(value!);
-                  },
-                  dropdownMenuEntries: [
-                    DropdownMenuEntry(value: "Red-FF0000", label: "Red"),
-                    DropdownMenuEntry(value: "Orange-FFA500", label: "Orange"),
-                    DropdownMenuEntry(value: "Yellow-FFFF00", label: "Yellow"),
-                    DropdownMenuEntry(value: "Green-008000", label: "Green"),
-                    DropdownMenuEntry(value: "Blue-0000FF", label: "Blue"),
-                    DropdownMenuEntry(value: "Indigo-4B0082", label: "Indigo"),
-                    DropdownMenuEntry(value: "Violet-EE82EE", label: "Violet"),
-                  ],
-                  hintText: selectedColor,
-                ),
-              ],
             ),
           ),
           AbsorbPointer(

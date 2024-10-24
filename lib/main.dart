@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -34,7 +33,6 @@ class BufferPage extends StatefulWidget {
 }
 
 class _BufferPageState extends State<BufferPage> {
-
   bool isLoggedIn() {
     final user = FirebaseAuth.instance.currentUser;
     return user != null;
@@ -43,26 +41,11 @@ class _BufferPageState extends State<BufferPage> {
   @override
   Widget build(BuildContext context) {
     // Navigate to either home or login page based on user state
-    Future.microtask(() {
-      if (isLoggedIn()) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
-      }
-    });
+    if (isLoggedIn()) {
+      return HomePage();
+    } else {
+      return LoginPage();
+    }
 
-    // While redirecting, show a loading screen
-    return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
   }
 }
-
