@@ -3,37 +3,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LEDWidget extends StatefulWidget {
-  const LEDWidget(
-      {super.key,
-      required this.ledState,
-      required this.currentBrightness,
-      required this.selectedColor});
-
-  final bool ledState; // to be changed from firebase
-  final double currentBrightness;
-  final String selectedColor;
+  const LEDWidget({super.key});
 
   @override
-  State<LEDWidget> createState() => _LEDWidgetState(
-      ledState: ledState,
-      currentBrightness: currentBrightness,
-      selectedColor: selectedColor);
+  State<LEDWidget> createState() => _LEDWidgetState();
 }
 
 class _LEDWidgetState extends State<LEDWidget> {
-  _LEDWidgetState(
-      {required this.ledState,
-      required this.currentBrightness,
-      required this.selectedColor});
+  _LEDWidgetState();
 
   final TextStyle _tStyle = TextStyle(fontSize: 22);
   TextEditingController colorController = TextEditingController();
-  bool ledState; // to be changed from firebase
-  double currentBrightness;
-  String selectedColor;
+  bool ledState = false;
+  double currentBrightness = 1;
+  String selectedColor = '';
+  String selectedColorValue = '';
 
   Map<String, dynamic>? ledInfo;
-  String selectedColorValue = '';
 
   Future<void> _fetchLedInfo() async {
     DocumentSnapshot doc = await FirebaseFirestore.instance

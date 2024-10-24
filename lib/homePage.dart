@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
         foregroundColor: Colors.white,
       ),
       body: (_selectedIndex == 0) ? ScheduleWidget(listOfSched: _listOfSchedule,) :
-            (_selectedIndex == 1) ? LEDWidget(ledState: ledState, currentBrightness: currentBrightness, selectedColor: selectedColor,) :
+            (_selectedIndex == 1) ? LEDWidget() :
             (_selectedIndex == 2) ? CurtainWidget() :
             AccountWidget() 
       ,
