@@ -33,7 +33,7 @@ class _LEDWidgetState extends State<LEDWidget> {
   String selectedColor;
 
   Map<String, dynamic>? ledInfo;
-  String colorValue = '';
+  String selectedColorValue = '';
 
   Future<void> _fetchLedInfo() async {
     DocumentSnapshot doc = await FirebaseFirestore.instance
@@ -88,9 +88,21 @@ class _LEDWidgetState extends State<LEDWidget> {
   }
 
   void _colorChange(String value) {
+    List<String> color = value.split('-');
     setState(() {
-      
+      selectedColor = color[0];
+      selectedColorValue = color[1];
     });
+    FirebaseFirestore.instance
+        .collection('users') // Replace with your collection name
+        .doc(
+            FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
+        .update({'ledInfo.ledColor': selectedColor});
+    FirebaseFirestore.instance
+        .collection('users') // Replace with your collection name
+        .doc(
+            FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
+        .update({'ledInfo.ledColorValue': selectedColorValue});
   }
 
   @override
@@ -122,7 +134,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                 DropdownMenu<String>(
                   initialSelection: "Test 1",
                   onSelected: (value) {
-                    print(value);
+                    _colorChange(value!);
                   },
                   dropdownMenuEntries: [
                     DropdownMenuEntry(value: "Red-FF0000", label: "Red"),
@@ -133,7 +145,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                     DropdownMenuEntry(value: "Indigo-4B0082", label: "Indigo"),
                     DropdownMenuEntry(value: "Violet-EE82EE", label: "Violet"),
                   ],
-                  hintText: "Color",
+                  hintText: selectedColor,
                 ),
               ],
             ),
