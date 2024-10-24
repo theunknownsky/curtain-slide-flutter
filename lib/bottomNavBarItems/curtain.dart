@@ -13,6 +13,8 @@ class CurtainWidget extends StatefulWidget {
 class _CurtainWidgetState extends State<CurtainWidget> {
   final TextStyle _tStyle = TextStyle(fontSize: 22);
 
+  int delay = 5; // full open or close
+
   bool actionBlock = false;
 
   void _curtainStateChange(int curtainMoveState) {
@@ -53,17 +55,14 @@ class _CurtainWidgetState extends State<CurtainWidget> {
               ),
               FilledButton.icon(
                 label: Row(
-                  children: [
-                    Icon(Icons.curtains_closed),
-                    Text("Close")
-                  ],
+                  children: [Icon(Icons.curtains_closed), Text("Close")],
                 ),
                 onPressed: () {
                   setState(() {
                     actionBlock = true;
                   });
                   _curtainStateChange(0);
-                  Timer(Duration(seconds: 3), () {
+                  Timer(Duration(seconds: delay), () {
                     setState(() {
                       actionBlock = false;
                     });
@@ -83,17 +82,14 @@ class _CurtainWidgetState extends State<CurtainWidget> {
               ),
               FilledButton.icon(
                 label: Row(
-                  children: [
-                    Icon(Icons.curtains),
-                    Text("Open")
-                  ],
+                  children: [Icon(Icons.curtains), Text("Open")],
                 ),
                 onPressed: () {
                   setState(() {
                     actionBlock = true;
                   });
                   _curtainStateChange(2);
-                  Timer(Duration(seconds: 3), () {
+                  Timer(Duration(seconds: delay), () {
                     setState(() {
                       actionBlock = false;
                     });
@@ -103,6 +99,54 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                   backgroundColor: WidgetStatePropertyAll(Colors.black),
                 ),
               )
+            ],
+          ),
+          Row(
+            children: [
+              Text(
+                "Manually Close Curtain",
+                style: _tStyle,
+              ),
+              GestureDetector(
+                child: FilledButton.icon(
+                  onPressed: () {},
+                  label: Row(
+                    children: [
+                      Icon(Icons.curtains_closed),
+                      Text("Close"),
+                    ],
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Colors.black),
+                  ),
+                ),
+                onLongPressDown: (_) => _curtainStateChange(0),
+                onLongPressEnd: (_) => _curtainStateChange(1),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Text(
+                "Manually Open Curtain",
+                style: _tStyle,
+              ),
+              GestureDetector(
+                child: FilledButton.icon(
+                  onPressed: () {},
+                  label: Row(
+                    children: [
+                      Icon(Icons.curtains),
+                      Text("Open"),
+                    ],
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Colors.black),
+                  ),
+                ),
+                onLongPressDown: (_) => _curtainStateChange(2),
+                onLongPressEnd: (_) => _curtainStateChange(1),
+              ),
             ],
           ),
         ],
