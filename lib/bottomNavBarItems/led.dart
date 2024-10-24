@@ -12,7 +12,9 @@ class LEDWidget extends StatefulWidget {
 class _LEDWidgetState extends State<LEDWidget> {
   _LEDWidgetState();
 
-  final TextStyle _tStyle = TextStyle(fontSize: 22);
+  final TextStyle _tStyle = TextStyle(
+    fontSize: 22,
+  );
   TextEditingController colorController = TextEditingController();
   bool ledState = false;
   double currentBrightness = 1;
@@ -96,18 +98,127 @@ class _LEDWidgetState extends State<LEDWidget> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Row(
-            children: [
-              Text(
-                "LED off/on",
-                style: _tStyle,
-              ),
-              Switch(
-                value: ledState,
-                activeColor: Colors.black,
-                onChanged: _ledChange,
-              )
-            ],
+          Container(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "LED",
+                      style: TextStyle(
+                        fontSize: 32,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Switch(
+                      value: ledState,
+                      activeColor: Color(0xFFd9d9d9),
+                      activeTrackColor: Color(0xFF737373),
+                      inactiveThumbColor: Color(0xFF191919),
+                      inactiveTrackColor: Color(0xFF383838),
+                      onChanged: _ledChange,
+                    )
+                  ],
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 8),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Turns the LED on or off.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Color(0xFF191919),
+            ),
+          ),
+          Container(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Color",
+                      style: TextStyle(
+                        fontSize: 32,
+                        color: Colors.white,
+                      ),
+                    ),
+                    AbsorbPointer(
+                      absorbing: !ledState,
+                      child: DropdownMenu<String>(
+                        initialSelection: "Test 1",
+                        onSelected: (value) {
+                          _colorChange(value!);
+                        },
+                        dropdownMenuEntries: [
+                          DropdownMenuEntry(value: "Red-FF0000", label: "Red", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
+                          DropdownMenuEntry(
+                              value: "Orange-FFA500", label: "Orange", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
+                          DropdownMenuEntry(
+                              value: "Yellow-FFFF00", label: "Yellow", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
+                          DropdownMenuEntry(
+                              value: "Green-008000", label: "Green", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
+                          DropdownMenuEntry(
+                              value: "Blue-0000FF", label: "Blue", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
+                          DropdownMenuEntry(
+                              value: "Indigo-4B0082", label: "Indigo", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
+                          DropdownMenuEntry(
+                              value: "Violet-EE82EE", label: "Violet", style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white))),
+                        ],
+                        hintText: selectedColor,
+                        inputDecorationTheme: InputDecorationTheme(
+                          fillColor: Color(0xFF383838),
+                          filled: true,
+                          hintStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4)
+                        ),
+                        menuStyle: MenuStyle(
+                          backgroundColor: WidgetStatePropertyAll(Color(0xFF383838)),
+                          padding: WidgetStatePropertyAll(EdgeInsets.fromLTRB(4, 4, 4, 4)),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 16),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Selects the color of the LED.\nOnly available if LED is on.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Color(0xFF191919),
+            ),
           ),
           AbsorbPointer(
             absorbing: !ledState,

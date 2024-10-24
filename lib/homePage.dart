@@ -107,26 +107,30 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Color(0xFF191919),
         title: Text(appBarTitle),
         foregroundColor: Colors.white,
       ),
-      body: (_selectedIndex == 0) ? ScheduleWidget(listOfSched: _listOfSchedule,) :
-            (_selectedIndex == 1) ? LEDWidget() :
-            (_selectedIndex == 2) ? CurtainWidget() :
-            AccountWidget() 
-      ,
+      body: SizedBox.expand(
+        child: Container(
+          child: (_selectedIndex == 0) ? ScheduleWidget(listOfSched: _listOfSchedule,) :
+              (_selectedIndex == 1) ? LEDWidget() :
+              (_selectedIndex == 2) ? CurtainWidget() :
+              AccountWidget(),
+          color: Color(0xFF383838),
+        ),
+      ),
       floatingActionButton: (_selectedIndex == 0) ? FloatingActionButton(
         onPressed: _addSchedule, // _addSchedule
         tooltip: 'Add Schedule',
         child: const Icon(Icons.add),
-        backgroundColor: Colors.black,
+        backgroundColor: Color(0xFF191919),
         foregroundColor: Colors.white,
         shape: CircleBorder(eccentricity: 0.0),
       ) : null,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.black,
+        backgroundColor: Color(0xFF191919),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
         items: const [
