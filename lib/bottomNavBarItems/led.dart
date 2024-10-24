@@ -11,27 +11,13 @@ class LEDWidget extends StatefulWidget {
 
   final bool ledState; // to be changed from firebase
   final double currentBrightness;
-  final ColorLabel? selectedColor;
+  final String selectedColor;
 
   @override
   State<LEDWidget> createState() => _LEDWidgetState(
       ledState: ledState,
       currentBrightness: currentBrightness,
       selectedColor: selectedColor);
-}
-
-enum ColorLabel {
-  red('Red', Colors.red),
-  orange('Orange', Colors.orange),
-  yellow('Yellow', Colors.yellow),
-  green('Green', Colors.green),
-  blue('Blue', Colors.blue),
-  indigo('Indigo', Colors.indigo),
-  violet('Violet', Color.fromARGB(255, 255, 0, 255));
-
-  const ColorLabel(this.label, this.color);
-  final String label;
-  final Color color;
 }
 
 class _LEDWidgetState extends State<LEDWidget> {
@@ -44,15 +30,37 @@ class _LEDWidgetState extends State<LEDWidget> {
   TextEditingController colorController = TextEditingController();
   bool ledState; // to be changed from firebase
   double currentBrightness;
-  ColorLabel? selectedColor;
+  String selectedColor;
 
-  Future<Map<String, dynamic>> getLedInfo() async {
-    DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore
-        .instance
+  Map<String, dynamic>? ledInfo;
+  String colorValue = '';
+
+  Future<void> _fetchLedInfo() async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
         .collection('users')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
-    return doc.data()?['ledInfo'];
+
+    if (doc.exists) {
+      setState(() {
+        ledInfo = doc.data() as Map<String, dynamic>;
+        ledState = ledInfo?['ledInfo']['ledState'];
+        selectedColor = ledInfo?['ledInfo']['ledColor'];
+        currentBrightness = ledInfo?['ledInfo']['ledBrightness'].toDouble();
+        print("LED State: ${ledState}");
+        print("LED Color: ${selectedColor}");
+        print("LED Brightness: ${currentBrightness}");
+      });
+    } else {
+      // Handle the case where the document doesn't exist
+      print('Document does not exist');
+    }
+  }
+
+  void initState() {
+    super.initState();
+    _fetchLedInfo();
+    print("LED Info");
   }
 
   void _ledChange(bool value) {
@@ -77,6 +85,12 @@ class _LEDWidgetState extends State<LEDWidget> {
         .doc(
             FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
         .update({'ledInfo.ledBrightness': currentBrightness});
+  }
+
+  void _colorChange(String value) {
+    setState(() {
+      
+    });
   }
 
   @override
@@ -105,32 +119,21 @@ class _LEDWidgetState extends State<LEDWidget> {
                   "LED Color",
                   style: _tStyle,
                 ),
-                DropdownMenu<ColorLabel>(
-                  initialSelection: ColorLabel.green,
-                  controller: colorController,
-                  // requestFocusOnTap is enabled/disabled by platforms when it is null.
-                  // On mobile platforms, this is false by default. Setting this to true will
-                  // trigger focus request on the text field and virtual keyboard will appear
-                  // afterward. On desktop platforms however, this defaults to true.
-                  requestFocusOnTap: true,
-                  label: const Text('Color'),
-                  onSelected: (ColorLabel? color) {
-                    setState(() {
-                      selectedColor = color;
-                      print(selectedColor);
-                    });
+                DropdownMenu<String>(
+                  initialSelection: "Test 1",
+                  onSelected: (value) {
+                    print(value);
                   },
-                  dropdownMenuEntries: ColorLabel.values
-                      .map<DropdownMenuEntry<ColorLabel>>((ColorLabel color) {
-                    return DropdownMenuEntry<ColorLabel>(
-                      value: color,
-                      label: color.label,
-                      enabled: color.label != 'Grey',
-                      style: MenuItemButton.styleFrom(
-                        foregroundColor: color.color,
-                      ),
-                    );
-                  }).toList(),
+                  dropdownMenuEntries: [
+                    DropdownMenuEntry(value: "Red-FF0000", label: "Red"),
+                    DropdownMenuEntry(value: "Orange-FFA500", label: "Orange"),
+                    DropdownMenuEntry(value: "Yellow-FFFF00", label: "Yellow"),
+                    DropdownMenuEntry(value: "Green-008000", label: "Green"),
+                    DropdownMenuEntry(value: "Blue-0000FF", label: "Blue"),
+                    DropdownMenuEntry(value: "Indigo-4B0082", label: "Indigo"),
+                    DropdownMenuEntry(value: "Violet-EE82EE", label: "Violet"),
+                  ],
+                  hintText: "Color",
                 ),
               ],
             ),
