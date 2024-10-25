@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,22 +11,22 @@ class CurtainWidget extends StatefulWidget {
 }
 
 class _CurtainWidgetState extends State<CurtainWidget> {
-  TextStyle actionTitleStyle = TextStyle(
+  TextStyle actionTitleStyle = const TextStyle(
     fontSize: 28,
     color: Colors.white,
     fontFamily: 'Inter',
   );
-  TextStyle actionDescriptionStyle = TextStyle(
+  TextStyle actionDescriptionStyle = const TextStyle(
     fontSize: 16,
     color: Colors.white,
     fontFamily: 'Inter',
   );
-  TextStyle delayTextStyle = TextStyle(
+  TextStyle delayTextStyle = const TextStyle(
     fontSize: 22,
     color: Colors.white,
     fontFamily: 'Inter',
   );
-  TextStyle notifStyle = TextStyle(
+  TextStyle notifStyle = const TextStyle(
     fontFamily: 'Inter',
   );
 
@@ -50,12 +48,13 @@ class _CurtainWidgetState extends State<CurtainWidget> {
       return AbsorbPointer(
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                child: CircularProgressIndicator(
+                margin: const EdgeInsets.only(bottom: 12),
+                child: const CircularProgressIndicator(
                   color: Colors.white,
                 ),
-                margin: EdgeInsets.only(bottom: 12),
               ),
               Text(
                 "Curtain operation in progress.",
@@ -66,7 +65,6 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                 style: delayTextStyle,
               )
             ],
-            mainAxisAlignment: MainAxisAlignment.center,
           ),
         ),
       );
@@ -76,6 +74,12 @@ class _CurtainWidgetState extends State<CurtainWidget> {
       child: Column(
         children: [
           Container(
+            margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFF191919),
+            ),
             child: Column(
               children: [
                 Row(
@@ -86,7 +90,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                       style: actionTitleStyle,
                     ),
                     FilledButton.icon(
-                      label: Text("Close"),
+                      label: const Text("Close"),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -106,13 +110,13 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                       },
                       style: ButtonStyle(
                         backgroundColor:
-                            WidgetStatePropertyAll(Color(0xFF383838)),
+                            const WidgetStatePropertyAll(Color(0xFF383838)),
                         shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        textStyle: WidgetStatePropertyAll(
+                        textStyle: const WidgetStatePropertyAll(
                           TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 18,
@@ -123,7 +127,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 8),
+                  margin: const EdgeInsets.only(top: 8),
                   child: Row(
                     children: [
                       Text(
@@ -135,14 +139,14 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                 ),
               ],
             ),
-            margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xFF191919),
-            ),
           ),
           Container(
+            margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFF191919),
+            ),
             child: Column(
               children: [
                 Row(
@@ -153,7 +157,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                       style: actionTitleStyle,
                     ),
                     FilledButton.icon(
-                      label: Text("Open"),
+                      label: const Text("Open"),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -173,13 +177,13 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                       },
                       style: ButtonStyle(
                         backgroundColor:
-                            WidgetStatePropertyAll(Color(0xFF383838)),
+                            const WidgetStatePropertyAll(Color(0xFF383838)),
                         shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        textStyle: WidgetStatePropertyAll(
+                        textStyle: const WidgetStatePropertyAll(
                           TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 18,
@@ -190,7 +194,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 8),
+                  margin: const EdgeInsets.only(top: 8),
                   child: Row(
                     children: [
                       Text(
@@ -202,14 +206,14 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                 ),
               ],
             ),
-            margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xFF191919),
-            ),
           ),
           Container(
+            margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFF191919),
+            ),
             child: Column(
               children: [
                 Row(
@@ -221,17 +225,17 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                     ),
                     GestureDetector(
                       child: FilledButton.icon(
-                        label: Text("Close"),
+                        label: const Text("Close"),
                         onPressed: () {},
                         style: ButtonStyle(
                           backgroundColor:
-                              WidgetStatePropertyAll(Color(0xFF383838)),
+                              const WidgetStatePropertyAll(Color(0xFF383838)),
                           shape: WidgetStatePropertyAll(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          textStyle: WidgetStatePropertyAll(
+                          textStyle: const WidgetStatePropertyAll(
                             TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 18,
@@ -244,7 +248,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text("Closing curtain...", style: notifStyle,),
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                           ),
                         );
                       },
@@ -255,7 +259,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 8),
+                  margin: const EdgeInsets.only(top: 8),
                   child: Row(
                     children: [
                       Text(
@@ -267,14 +271,14 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                 ),
               ],
             ),
-            margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xFF191919),
-            ),
           ),
           Container(
+            margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFF191919),
+            ),
             child: Column(
               children: [
                 Row(
@@ -286,17 +290,17 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                     ),
                     GestureDetector(
                       child: FilledButton.icon(
-                        label: Text("Open"),
+                        label: const Text("Open"),
                         onPressed: () {},
                         style: ButtonStyle(
                           backgroundColor:
-                              WidgetStatePropertyAll(Color(0xFF383838)),
+                              const WidgetStatePropertyAll(Color(0xFF383838)),
                           shape: WidgetStatePropertyAll(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          textStyle: WidgetStatePropertyAll(
+                          textStyle: const WidgetStatePropertyAll(
                             TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 18,
@@ -309,7 +313,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text("Opening curtain...", style: notifStyle,),
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                           ),
                         );
                       },
@@ -320,7 +324,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 8),
+                  margin: const EdgeInsets.only(top: 8),
                   child: Row(
                     children: [
                       Text(
@@ -331,12 +335,6 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                   ),
                 ),
               ],
-            ),
-            margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xFF191919),
             ),
           ),
         ],

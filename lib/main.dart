@@ -42,9 +42,9 @@ class _BufferPageState extends State<BufferPage> {
   Widget build(BuildContext context) {
     // Navigate to either home or login page based on user state
     if (isLoggedIn()) {
-      return HomePage();
+      return const HomePage();
     } else {
-      return LoginPage();
+      return const LoginPage();
     }
 
   }

@@ -39,8 +39,8 @@ class _LoginPageState extends State<LoginPage> {
 
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
-  TextEditingController _ctnsldEmailController = TextEditingController();
-  TextEditingController _ctnsldPasswordController = TextEditingController();
+  final TextEditingController _ctnsldEmailController = TextEditingController();
+  final TextEditingController _ctnsldPasswordController = TextEditingController();
 
   @override
   void dispose() {
@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF191919),
+        backgroundColor: const Color(0xFF191919),
         title: Text(
           "Login",
           style: onlyInter,
@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       body: Center(
         child: Container(
-          color: Color(0xFF383838),
+          color: const Color(0xFF383838),
 
           padding: const EdgeInsets.only(top: 100.0),
           child: Column(
@@ -91,11 +91,11 @@ class _LoginPageState extends State<LoginPage> {
                       child: TextFormField(
                         controller: _ctnsldEmailController,
                         decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
-                          errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                          enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
+                          focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
+                          errorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
                           filled: true,
-                          fillColor: Color(0xFF191919),
+                          fillColor: const Color(0xFF191919),
                           labelText: "CurtainSlide Email",
                           errorStyle: onlyInter,
                           hintStyle: onlyInter,
@@ -118,11 +118,11 @@ class _LoginPageState extends State<LoginPage> {
                       child: TextFormField(
                         controller: _ctnsldPasswordController,
                         decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
-                          errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                          enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
+                          focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
+                          errorBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
                           filled: true,
-                          fillColor: Color(0xFF191919),
+                          fillColor: const Color(0xFF191919),
                           labelText: "CurtainSlide Password",
                           errorStyle: onlyInter,
                           hintStyle: onlyInter,
@@ -186,13 +186,11 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-              Container(
-                child: Text(
-                  wrongCreds,
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontFamily: 'Inter',
-                  ),
+              Text(
+                wrongCreds,
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontFamily: 'Inter',
                 ),
               ),
             ],
@@ -209,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
     User? user = await _auth.signInCtnSldCredentials(email, password);
 
     if (user != null) {
-      print("${email} has successfully logged in.");
+      print("$email has successfully logged in.");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),

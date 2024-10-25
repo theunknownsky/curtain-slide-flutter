@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<Map<String, dynamic>>? ledInfo;
 
-  TextStyle _schedTextStyle = TextStyle(
+  final TextStyle _schedTextStyle = const TextStyle(
     fontSize: 30,
     fontWeight: FontWeight.bold,
   );
@@ -51,35 +51,35 @@ class _HomePageState extends State<HomePage> {
         InkWell(
           onTap: () {},
           child: Card(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            color: const Color.fromARGB(255, 201, 201, 201),
             child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              alignment: Alignment.centerLeft,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Time: ",
                     style: _schedTextStyle,
                   ),
-                  Row(
+                  const Row(
                     children: [
                       Text("LED Color: "),
                       Text("Blue"),
                     ],
                   ),
-                  Row(
+                  const Row(
                     children: [
                       Text("Curtain Mode: "),
                       Text("Closed"),
                     ],
                   ),
                 ],
-                crossAxisAlignment: CrossAxisAlignment.start,
               ),
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              alignment: Alignment.centerLeft,
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            color: const Color.fromARGB(255, 201, 201, 201),
           ),
         ),
       );
@@ -105,46 +105,46 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF191919),
+        backgroundColor: const Color(0xFF191919),
         title: Text(
           appBarTitle,
-          style: TextStyle(fontFamily: 'Inter'),
+          style: const TextStyle(fontFamily: 'Inter'),
         ),
         foregroundColor: Colors.white,
       ),
       body: SizedBox.expand(
         child: Container(
+          color: const Color(0xFF383838),
           child: (_selectedIndex == 0)
               ? ScheduleWidget(
                   listOfSched: _listOfSchedule,
                 )
               : (_selectedIndex == 1)
-                  ? LEDWidget()
+                  ? const LEDWidget()
                   : (_selectedIndex == 2)
-                      ? CurtainWidget()
-                      : AccountWidget(),
-          color: Color(0xFF383838),
+                      ? const CurtainWidget()
+                      : const AccountWidget(),
         ),
       ),
       floatingActionButton: (_selectedIndex == 0)
           ? FloatingActionButton(
               onPressed: _addSchedule, // _addSchedule
               tooltip: 'Add Schedule',
-              child: const Icon(Icons.add),
-              backgroundColor: Color(0xFF191919),
+              backgroundColor: const Color(0xFF191919),
               foregroundColor: Colors.white,
-              shape: CircleBorder(eccentricity: 0.0),
+              shape: const CircleBorder(eccentricity: 0.0),
+              child: const Icon(Icons.add),
             )
           : null,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Color(0xFF191919),
+        backgroundColor: const Color(0xFF191919),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
-        selectedLabelStyle: TextStyle(
+        selectedLabelStyle: const TextStyle(
           fontFamily: 'Inter',
         ),
-        unselectedLabelStyle: TextStyle(
+        unselectedLabelStyle: const TextStyle(
           fontFamily: 'Inter',
         ),
         items: const [

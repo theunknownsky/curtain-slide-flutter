@@ -27,32 +27,32 @@ class _AccountWidgetState extends State<AccountWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             "Email: ${getUserEmail()}",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 24,
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 14),
+            margin: const EdgeInsets.only(top: 14),
             child: TextButton(
               onPressed: signOutUser,
-              child: Text(
-                "Log Out",
-              ),
               style: TextButton.styleFrom(
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              ),
+              child: const Text(
+                "Log Out",
               ),
             ),
           ),
         ],
-        mainAxisAlignment: MainAxisAlignment.center,
       ),
     );
   }

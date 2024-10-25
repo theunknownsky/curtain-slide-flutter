@@ -17,12 +17,12 @@ class _LEDWidgetState extends State<LEDWidget> {
   String selectedColor = '';
   String selectedColorValue = '';
 
-  TextStyle actionTitleStyle = TextStyle(
+  TextStyle actionTitleStyle = const TextStyle(
     fontSize: 28,
     color: Colors.white,
     fontFamily: 'Inter',
   );
-  TextStyle actionDescriptionStyle = TextStyle(
+  TextStyle actionDescriptionStyle = const TextStyle(
     fontSize: 16,
     color: Colors.white,
     fontFamily: 'Inter',
@@ -42,9 +42,9 @@ class _LEDWidgetState extends State<LEDWidget> {
         ledState = ledInfo?['ledInfo']['ledState'];
         selectedColor = ledInfo?['ledInfo']['ledColor'];
         currentBrightness = ledInfo?['ledInfo']['ledBrightness'].toDouble();
-        print("LED State: ${ledState}");
-        print("LED Color: ${selectedColor}");
-        print("LED Brightness: ${currentBrightness}");
+        print("LED State: $ledState");
+        print("LED Color: $selectedColor");
+        print("LED Brightness: $currentBrightness");
       });
     } else {
       // Handle the case where the document doesn't exist
@@ -52,6 +52,7 @@ class _LEDWidgetState extends State<LEDWidget> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     _fetchLedInfo();
@@ -61,7 +62,7 @@ class _LEDWidgetState extends State<LEDWidget> {
   void _ledChange(bool value) {
     setState(() {
       ledState = value;
-      print("Current LED State: ${ledState}");
+      print("Current LED State: $ledState");
     });
     FirebaseFirestore.instance
         .collection('users') // Replace with your collection name
@@ -73,7 +74,7 @@ class _LEDWidgetState extends State<LEDWidget> {
   void _brightnessChange(double value) {
     setState(() {
       currentBrightness = value;
-      print("Current brightness: ${currentBrightness}");
+      print("Current brightness: $currentBrightness");
     });
     FirebaseFirestore.instance
         .collection('users') // Replace with your collection name
@@ -106,6 +107,12 @@ class _LEDWidgetState extends State<LEDWidget> {
       child: Column(
         children: [
           Container(
+            margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFF191919),
+            ),
             child: Column(
               children: [
                 Row(
@@ -117,16 +124,16 @@ class _LEDWidgetState extends State<LEDWidget> {
                     ),
                     Switch(
                       value: ledState,
-                      activeColor: Color(0xFFd9d9d9),
-                      activeTrackColor: Color(0xFF737373),
-                      inactiveThumbColor: Color(0xFF737373),
-                      inactiveTrackColor: Color(0xFF383838),
+                      activeColor: const Color(0xFFd9d9d9),
+                      activeTrackColor: const Color(0xFF737373),
+                      inactiveThumbColor: const Color(0xFF737373),
+                      inactiveTrackColor: const Color(0xFF383838),
                       onChanged: _ledChange,
                     ),
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 8),
+                  margin: const EdgeInsets.only(top: 8),
                   child: Row(
                     children: [
                       Text(
@@ -138,14 +145,14 @@ class _LEDWidgetState extends State<LEDWidget> {
                 ),
               ],
             ),
-            margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xFF191919),
-            ),
           ),
           Container(
+            margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFF191919),
+            ),
             child: Column(
               children: [
                 Row(
@@ -159,31 +166,31 @@ class _LEDWidgetState extends State<LEDWidget> {
                       absorbing: !ledState,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFF383838),
+                          color: const Color(0xFF383838),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                         child: DropdownButton<String>(
                           hint: Text(
                             selectedColor,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 18,
                               fontFamily: 'Inter',
                             ),
                           ),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontFamily: 'Inter',
                           ),
-                          dropdownColor: Color(0xFF383838),
+                          dropdownColor: const Color(0xFF383838),
                           iconSize: 36,
                           borderRadius: BorderRadius.circular(10),
                           onChanged: (String? value) {
                             _colorChange(value!);
                             print(value);
                           },
-                          items: [
+                          items: const [
                             DropdownMenuItem(
                               value: "Red-FF0000",
                               child: Text("Red"),
@@ -219,7 +226,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 16),
+                  margin: const EdgeInsets.only(top: 16),
                   child: Row(
                     children: [
                       Text(
@@ -231,14 +238,14 @@ class _LEDWidgetState extends State<LEDWidget> {
                 ),
               ],
             ),
-            margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xFF191919),
-            ),
           ),
           Container(
+            margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: const EdgeInsets.fromLTRB(16, 16, 4, 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFF191919),
+            ),
             child: Column(
               children: [
                 Row(
@@ -250,31 +257,29 @@ class _LEDWidgetState extends State<LEDWidget> {
                     ),
                     AbsorbPointer(
                       absorbing: !ledState,
-                      child: Container(
-                        child: SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            valueIndicatorTextStyle: TextStyle(
-                              color: Colors.black,
-                            ),
-                            showValueIndicator: ShowValueIndicator
-                                .always, // Always show the value indicator
+                      child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          valueIndicatorTextStyle: const TextStyle(
+                            color: Colors.black,
                           ),
-                          child: Slider(
-                            value: currentBrightness,
-                            onChanged: _brightnessChange,
-                            max: 10,
-                            divisions: 10,
-                            label: currentBrightness.round().toString(),
-                            activeColor: Color(0xFFD9D9D9),
-                            inactiveColor: Color(0xFF737373),
-                          ),
+                          showValueIndicator: ShowValueIndicator
+                              .always, // Always show the value indicator
+                        ),
+                        child: Slider(
+                          value: currentBrightness,
+                          onChanged: _brightnessChange,
+                          max: 10,
+                          divisions: 10,
+                          label: currentBrightness.round().toString(),
+                          activeColor: const Color(0xFFD9D9D9),
+                          inactiveColor: const Color(0xFF737373),
                         ),
                       ),
                     )
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 16),
+                  margin: const EdgeInsets.only(top: 16),
                   child: Row(
                     children: [
                       Text(
@@ -285,12 +290,6 @@ class _LEDWidgetState extends State<LEDWidget> {
                   ),
                 ),
               ],
-            ),
-            margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
-            padding: EdgeInsets.fromLTRB(16, 16, 4, 16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xFF191919),
             ),
           ),
         ],
