@@ -12,9 +12,7 @@ class LEDWidget extends StatefulWidget {
 class _LEDWidgetState extends State<LEDWidget> {
   _LEDWidgetState();
 
-  final TextStyle _tStyle = TextStyle(
-    fontSize: 22,
-  );
+  
   TextEditingController colorController = TextEditingController();
   bool ledState = false;
   double currentBrightness = 1;
@@ -107,8 +105,9 @@ class _LEDWidgetState extends State<LEDWidget> {
                     Text(
                       "LED",
                       style: TextStyle(
-                        fontSize: 32,
+                        fontSize: 28,
                         color: Colors.white,
+                        fontFamily: 'Inter',
                       ),
                     ),
                     Switch(
@@ -130,6 +129,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white,
+                          fontFamily: 'Inter',
                         ),
                       ),
                     ],
@@ -138,7 +138,7 @@ class _LEDWidgetState extends State<LEDWidget> {
               ],
             ),
             margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Color(0xFF191919),
@@ -153,8 +153,9 @@ class _LEDWidgetState extends State<LEDWidget> {
                     Text(
                       "Color",
                       style: TextStyle(
-                        fontSize: 32,
+                        fontSize: 28,
                         color: Colors.white,
+                        fontFamily: 'Inter',
                       ),
                     ),
                     AbsorbPointer(
@@ -173,7 +174,10 @@ class _LEDWidgetState extends State<LEDWidget> {
                               fontSize: 18,
                             ),
                           ),
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                          ),
                           dropdownColor: Color(0xFF383838),
                           iconSize: 36,
                           borderRadius: BorderRadius.circular(10),
@@ -225,6 +229,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white,
+                          fontFamily: 'Inter',
                         ),
                       ),
                     ],
@@ -233,28 +238,73 @@ class _LEDWidgetState extends State<LEDWidget> {
               ],
             ),
             margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Color(0xFF191919),
             ),
           ),
-          AbsorbPointer(
-            absorbing: !ledState,
-            child: Row(
+          Container(
+            child: Column(
               children: [
-                Text(
-                  "Brightness",
-                  style: _tStyle,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Brightness",
+                      style: TextStyle(
+                        fontSize: 28,
+                        color: Colors.white,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    AbsorbPointer(
+                      absorbing: !ledState,
+                      child: Container(
+                        child: SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            valueIndicatorTextStyle: TextStyle(
+                              color: Colors.black,
+                            ),
+                            showValueIndicator: ShowValueIndicator
+                                .always, // Always show the value indicator
+                          ),
+                          child: Slider(
+                            value: currentBrightness,
+                            onChanged: _brightnessChange,
+                            max: 10,
+                            divisions: 10,
+                            label: currentBrightness.round().toString(),
+                            activeColor: Color(0xFFD9D9D9),
+                            inactiveColor: Color(0xFF737373),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                Slider(
-                  value: currentBrightness,
-                  onChanged: _brightnessChange,
-                  max: 10,
-                  divisions: 10,
-                  label: currentBrightness.toString(),
-                )
+                Container(
+                  margin: EdgeInsets.only(top: 16),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Controls the brightness of the LED.\nOnly available if LED is on.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
+            ),
+            margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: EdgeInsets.fromLTRB(16, 16, 4, 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Color(0xFF191919),
             ),
           ),
         ],
