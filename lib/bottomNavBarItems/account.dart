@@ -10,6 +10,17 @@ class AccountWidget extends StatefulWidget {
 }
 
 class _AccountWidgetState extends State<AccountWidget> {
+  TextStyle actionTitleStyle = const TextStyle(
+    fontSize: 28,
+    color: Colors.white,
+    fontFamily: 'Inter',
+  );
+  TextStyle actionDescriptionStyle = const TextStyle(
+    fontSize: 16,
+    color: Colors.white,
+    fontFamily: 'Inter',
+  );
+
   String? getUserEmail() {
     final user = FirebaseAuth.instance.currentUser;
     return user?.email;
@@ -25,31 +36,55 @@ class _AccountWidgetState extends State<AccountWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SingleChildScrollView(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            "Email: ${getUserEmail()}",
-            style: const TextStyle(
-              fontSize: 24,
-            ),
-          ),
           Container(
-            margin: const EdgeInsets.only(top: 14),
-            child: TextButton(
-              onPressed: signOutUser,
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+            margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFF191919),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Account",
+                      style: actionTitleStyle,
+                    ),
+                    FilledButton.icon(
+                      label: const Text("Log Out"),
+                      onPressed: signOutUser,
+                      style: ButtonStyle(
+                        backgroundColor:
+                            const WidgetStatePropertyAll(Color(0xFF383838)),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        textStyle: const WidgetStatePropertyAll(
+                          TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              ),
-              child: const Text(
-                "Log Out",
-              ),
+                Row(
+                  children: [
+                    Text(
+                      "CurtainSlide Email: \n${getUserEmail()}",
+                      style: actionDescriptionStyle,
+                    )
+                  ],
+                )
+              ],
             ),
           ),
         ],
