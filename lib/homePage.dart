@@ -29,9 +29,7 @@ class _HomePageState extends State<HomePage> {
     fontWeight: FontWeight.bold,
   );
 
-  
-
-  void _onBotNavBarItemTapped (int index) async {
+  void _onBotNavBarItemTapped(int index) async {
     setState(() {
       _selectedIndex = index;
       _selectedBotNavBarItem();
@@ -42,12 +40,12 @@ class _HomePageState extends State<HomePage> {
       print("LED selected");
     } else if (index == 2) {
       print("Curtain selected");
-    } else if (index == 3){
+    } else if (index == 3) {
       print("Account selected.");
     }
   }
 
-  void _addSchedule(){
+  void _addSchedule() {
     setState(() {
       _listOfSchedule.add(
         InkWell(
@@ -87,17 +85,17 @@ class _HomePageState extends State<HomePage> {
       );
     });
   }
-  
+
   String appBarTitle = "CurtainSlide/Schedule";
-  void _selectedBotNavBarItem(){
+  void _selectedBotNavBarItem() {
     setState(() {
-      if (_selectedIndex == 0){
+      if (_selectedIndex == 0) {
         appBarTitle = "CurtainSlide/Schedule";
-      } else if (_selectedIndex == 1){
+      } else if (_selectedIndex == 1) {
         appBarTitle = "CurtainSlide/LED";
-      } else if (_selectedIndex == 2){
+      } else if (_selectedIndex == 2) {
         appBarTitle = "CurtainSlide/Curtain";
-      } else if (_selectedIndex == 3){
+      } else if (_selectedIndex == 3) {
         appBarTitle = "CurtainSlide/Account";
       }
     });
@@ -108,31 +106,47 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF191919),
-        title: Text(appBarTitle),
+        title: Text(
+          appBarTitle,
+          style: TextStyle(fontFamily: 'Inter'),
+        ),
         foregroundColor: Colors.white,
       ),
       body: SizedBox.expand(
         child: Container(
-          child: (_selectedIndex == 0) ? ScheduleWidget(listOfSched: _listOfSchedule,) :
-              (_selectedIndex == 1) ? LEDWidget() :
-              (_selectedIndex == 2) ? CurtainWidget() :
-              AccountWidget(),
+          child: (_selectedIndex == 0)
+              ? ScheduleWidget(
+                  listOfSched: _listOfSchedule,
+                )
+              : (_selectedIndex == 1)
+                  ? LEDWidget()
+                  : (_selectedIndex == 2)
+                      ? CurtainWidget()
+                      : AccountWidget(),
           color: Color(0xFF383838),
         ),
       ),
-      floatingActionButton: (_selectedIndex == 0) ? FloatingActionButton(
-        onPressed: _addSchedule, // _addSchedule
-        tooltip: 'Add Schedule',
-        child: const Icon(Icons.add),
-        backgroundColor: Color(0xFF191919),
-        foregroundColor: Colors.white,
-        shape: CircleBorder(eccentricity: 0.0),
-      ) : null,
+      floatingActionButton: (_selectedIndex == 0)
+          ? FloatingActionButton(
+              onPressed: _addSchedule, // _addSchedule
+              tooltip: 'Add Schedule',
+              child: const Icon(Icons.add),
+              backgroundColor: Color(0xFF191919),
+              foregroundColor: Colors.white,
+              shape: CircleBorder(eccentricity: 0.0),
+            )
+          : null,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Color(0xFF191919),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
+        selectedLabelStyle: TextStyle(
+          fontFamily: 'Inter',
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: 'Inter',
+        ),
         items: const [
           BottomNavigationBarItem(
             label: "Schedule",

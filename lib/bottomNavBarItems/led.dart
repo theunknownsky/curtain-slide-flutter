@@ -11,13 +11,22 @@ class LEDWidget extends StatefulWidget {
 
 class _LEDWidgetState extends State<LEDWidget> {
   _LEDWidgetState();
-
-  
   TextEditingController colorController = TextEditingController();
   bool ledState = false;
   double currentBrightness = 1;
   String selectedColor = '';
   String selectedColorValue = '';
+
+  TextStyle actionTitleStyle = TextStyle(
+    fontSize: 28,
+    color: Colors.white,
+    fontFamily: 'Inter',
+  );
+  TextStyle actionDescriptionStyle = TextStyle(
+    fontSize: 16,
+    color: Colors.white,
+    fontFamily: 'Inter',
+  );
 
   Map<String, dynamic>? ledInfo;
 
@@ -104,17 +113,13 @@ class _LEDWidgetState extends State<LEDWidget> {
                   children: [
                     Text(
                       "LED",
-                      style: TextStyle(
-                        fontSize: 28,
-                        color: Colors.white,
-                        fontFamily: 'Inter',
-                      ),
+                      style: actionTitleStyle,
                     ),
                     Switch(
                       value: ledState,
                       activeColor: Color(0xFFd9d9d9),
                       activeTrackColor: Color(0xFF737373),
-                      inactiveThumbColor: Color(0xFF191919),
+                      inactiveThumbColor: Color(0xFF737373),
                       inactiveTrackColor: Color(0xFF383838),
                       onChanged: _ledChange,
                     ),
@@ -126,11 +131,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                     children: [
                       Text(
                         "Turns the LED on or off.",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontFamily: 'Inter',
-                        ),
+                        style: actionDescriptionStyle,
                       ),
                     ],
                   ),
@@ -152,11 +153,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                   children: [
                     Text(
                       "Color",
-                      style: TextStyle(
-                        fontSize: 28,
-                        color: Colors.white,
-                        fontFamily: 'Inter',
-                      ),
+                      style: actionTitleStyle,
                     ),
                     AbsorbPointer(
                       absorbing: !ledState,
@@ -172,6 +169,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
+                              fontFamily: 'Inter',
                             ),
                           ),
                           style: TextStyle(
@@ -226,11 +224,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                     children: [
                       Text(
                         "Selects the color of the LED.\nOnly available if LED is on.",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontFamily: 'Inter',
-                        ),
+                        style: actionDescriptionStyle,
                       ),
                     ],
                   ),
@@ -252,11 +246,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                   children: [
                     Text(
                       "Brightness",
-                      style: TextStyle(
-                        fontSize: 28,
-                        color: Colors.white,
-                        fontFamily: 'Inter',
-                      ),
+                      style: actionTitleStyle,
                     ),
                     AbsorbPointer(
                       absorbing: !ledState,
@@ -289,11 +279,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                     children: [
                       Text(
                         "Controls the brightness of the LED.\nOnly available if LED is on.",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontFamily: 'Inter',
-                        ),
+                        style: actionDescriptionStyle,
                       ),
                     ],
                   ),
