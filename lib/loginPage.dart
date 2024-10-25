@@ -16,6 +16,27 @@ class _LoginPageState extends State<LoginPage> {
 
   String wrongCreds = "";
 
+  TextStyle onlyInter = const TextStyle(
+    fontFamily: 'Inter',
+    color: Colors.white,
+  );
+  TextStyle ctnsldCredStyle = const TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 24,
+    color: Colors.white,
+  );
+  TextStyle welcomeStyle = const TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 36,
+    color: Colors.white,
+  );
+  TextStyle ctnsldStyle = const TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 48,
+    color: Colors.white,
+    fontWeight: FontWeight.w900,
+  );
+
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
   TextEditingController _ctnsldEmailController = TextEditingController();
@@ -32,35 +53,33 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text("Login"),
+        backgroundColor: Color(0xFF191919),
+        title: Text(
+          "Login",
+          style: onlyInter,
+        ),
         foregroundColor: Colors.white,
       ),
       body: Center(
-        child: Padding(
+        child: Container(
+          color: Color(0xFF383838),
+
           padding: const EdgeInsets.only(top: 100.0),
           child: Column(
             children: [
-              const Text(
+              Text(
                 "Welcome to",
-                style: TextStyle(
-                  fontSize: 36,
-                ),
+                style: welcomeStyle,
               ),
-              const Text(
+              Text(
                 "CurtainSlide",
-                style: TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: ctnsldStyle,
               ),
               Container(
                 margin: const EdgeInsets.only(top: 50),
-                child: const Text(
+                child: Text(
                   "Enter CurtainSlide Credentials",
-                  style: TextStyle(
-                    fontSize: 24,
-                  ),
+                  style: ctnsldCredStyle,
                 ),
               ),
               Form(
@@ -71,10 +90,19 @@ class _LoginPageState extends State<LoginPage> {
                       margin: const EdgeInsets.fromLTRB(40, 8, 40, 0),
                       child: TextFormField(
                         controller: _ctnsldEmailController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
+                          errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                          filled: true,
+                          fillColor: Color(0xFF191919),
                           labelText: "CurtainSlide Email",
+                          errorStyle: onlyInter,
+                          hintStyle: onlyInter,
+                          labelStyle: onlyInter,
+                          floatingLabelStyle: onlyInter,
                         ),
+                        style: onlyInter,
                         validator: (String? value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter a CurtainSlide Email';
@@ -90,8 +118,16 @@ class _LoginPageState extends State<LoginPage> {
                       child: TextFormField(
                         controller: _ctnsldPasswordController,
                         decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFD9D9D9))),
+                          errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+                          filled: true,
+                          fillColor: Color(0xFF191919),
                           labelText: "CurtainSlide Password",
+                          errorStyle: onlyInter,
+                          hintStyle: onlyInter,
+                          labelStyle: onlyInter,
+                          floatingLabelStyle: onlyInter,
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscureText
@@ -105,6 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                             },
                           ),
                         ),
+                        style: onlyInter,
                         obscureText: _obscureText,
                         validator: (String? value) {
                           if (value == null || value.isEmpty) {
@@ -114,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       ),
                     ),
-                    Padding(
+                    Container(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: FilledButton(
                         onPressed: () {
@@ -141,6 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                           'Submit',
                           style: TextStyle(
                             fontSize: 16,
+                            fontFamily: 'Inter',
                           ),
                         ),
                       ),
@@ -153,6 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                   wrongCreds,
                   style: TextStyle(
                     color: Colors.red,
+                    fontFamily: 'Inter',
                   ),
                 ),
               ),
@@ -176,9 +215,9 @@ class _LoginPageState extends State<LoginPage> {
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
     } else {
-     setState(() {
-       wrongCreds = "Wrong credentials.";
-     });
+      setState(() {
+        wrongCreds = "Wrong credentials.";
+      });
     }
   }
 }
