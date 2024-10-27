@@ -1,4 +1,5 @@
 import 'package:curtainslide/bottomNavBarItems/account.dart';
+import 'package:curtainslide/bottomNavBarItems/addSchedule.dart';
 import 'package:curtainslide/bottomNavBarItems/curtain.dart';
 import 'package:curtainslide/bottomNavBarItems/led.dart';
 import 'package:curtainslide/bottomNavBarItems/schedule.dart';
@@ -15,24 +16,23 @@ class HomePage extends StatefulWidget {
 List<Widget> _listOfSchedule = [];
 
 // LED data
-bool ledState = false;
-double currentBrightness = 5;
-String selectedColor = "";
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  bool _onAddSched = false;
 
   Future<Map<String, dynamic>>? ledInfo;
 
-  final TextStyle _schedTextStyle = const TextStyle(
-    fontSize: 30,
-    fontWeight: FontWeight.bold,
-  );
-
   void _onBotNavBarItemTapped(int index) async {
     setState(() {
-      _selectedIndex = index;
-      _selectedBotNavBarItem();
+      if (index >= 0 && index <= 3) {
+        _selectedIndex = index;
+        _onAddSched = false;
+        _selectedBotNavBarItem();
+      } else {
+        _onAddSched = true;
+        _selectedBotNavBarItem();
+      }
     });
     if (index == 0) {
       print("Schedule selected");
@@ -43,46 +43,20 @@ class _HomePageState extends State<HomePage> {
     } else if (index == 3) {
       print("Account selected.");
     }
+
+    if (_onAddSched) {
+      print("Add Schedule selected");
+    } else {
+      setState(() {
+        _onAddSched = false;
+      });
+    }
   }
 
   void _addSchedule() {
     setState(() {
-      _listOfSchedule.add(
-        InkWell(
-          onTap: () {},
-          child: Card(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            color: const Color.fromARGB(255, 201, 201, 201),
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              alignment: Alignment.centerLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Time: ",
-                    style: _schedTextStyle,
-                  ),
-                  const Row(
-                    children: [
-                      Text("LED Color: "),
-                      Text("Blue"),
-                    ],
-                  ),
-                  const Row(
-                    children: [
-                      Text("Curtain Mode: "),
-                      Text("Closed"),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
+      _onAddSched == true;
+      _onBotNavBarItemTapped(4);
     });
   }
 
@@ -98,6 +72,9 @@ class _HomePageState extends State<HomePage> {
       } else if (_selectedIndex == 3) {
         appBarTitle = "CurtainSlide/Account";
       }
+      if (_onAddSched) {
+        appBarTitle = "CurtainSlide/Schedule/Add";
+      }
     });
   }
 
@@ -105,6 +82,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: (_onAddSched)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  setState(() {
+                    _onAddSched = false;
+                  });
+                  _onBotNavBarItemTapped(0);
+                },
+              )
+            : null,
         backgroundColor: const Color(0xFF191919),
         title: Text(
           appBarTitle,
@@ -115,20 +103,20 @@ class _HomePageState extends State<HomePage> {
       body: SizedBox.expand(
         child: Container(
           color: const Color(0xFF383838),
-          child: (_selectedIndex == 0)
-              ? ScheduleWidget(
-                  listOfSched: _listOfSchedule,
-                )
-              : (_selectedIndex == 1)
-                  ? const LEDWidget()
-                  : (_selectedIndex == 2)
-                      ? const CurtainWidget()
-                      : const AccountWidget(),
+          child: (_onAddSched == true)
+              ? const AddScheduleWidget()
+              : (_selectedIndex == 0)
+                  ? ScheduleWidget(listOfSched: _listOfSchedule)
+                  : (_selectedIndex == 1)
+                      ? const LEDWidget()
+                      : (_selectedIndex == 2)
+                          ? const CurtainWidget()
+                          : const AccountWidget(),
         ),
       ),
-      floatingActionButton: (_selectedIndex == 0)
+      floatingActionButton: (_selectedIndex == 0 && !_onAddSched)
           ? FloatingActionButton(
-              onPressed: _addSchedule, // _addSchedule
+              onPressed: _addSchedule,
               tooltip: 'Add Schedule',
               backgroundColor: const Color(0xFF191919),
               foregroundColor: Colors.white,
