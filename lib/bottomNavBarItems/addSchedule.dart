@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:curtainslide/homePage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AddScheduleWidget extends StatefulWidget {
@@ -55,7 +58,35 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
     });
   }
 
-  
+  Future<void> addScheduleFunc() async {
+    final user = FirebaseAuth.instance.currentUser!;
+    final userId = user.uid;
+
+    String timeString =
+        '${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}';
+
+    // Create the map to add to the schedule
+    final newScheduleEntry = {
+      'curtainState':
+          currentCurtainCloseness, // Replace with your desired value
+      'time': timeString, // Get the current timestamp
+      'ledInfo': {
+        'ledBrightness': currentBrightness, // Replace with your desired value
+        'ledColor': selectedColor, // Replace with your desired value
+        'ledColorValue': selectedColorValue, // Replace with your desired value
+        'ledState': ledState, // Replace with your desired value
+      },
+    };
+    // Update the user's schedule in Firestore
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'schedule': FieldValue.arrayUnion([newScheduleEntry])
+    });
+    print('Schedule entry added successfully!');
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -316,8 +347,10 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                     ),
                     FilledButton.icon(
                       label: Text(selectedTime == null
-                          ? MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.now())
-                          : MaterialLocalizations.of(context).formatTimeOfDay(selectedTime!)),
+                          ? MaterialLocalizations.of(context)
+                              .formatTimeOfDay(TimeOfDay.now())
+                          : MaterialLocalizations.of(context)
+                              .formatTimeOfDay(selectedTime!)),
                       onPressed: () async {
                         var pickedTime = await showTimePicker(
                           context: context,
@@ -380,9 +413,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                     ),
                     FilledButton.icon(
                       label: const Text("Save"),
-                      onPressed: () {
-                        
-                      },
+                      onPressed: addScheduleFunc,
                       style: ButtonStyle(
                         backgroundColor:
                             const WidgetStatePropertyAll(Color(0xFF383838)),
