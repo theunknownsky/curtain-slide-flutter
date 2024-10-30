@@ -96,6 +96,42 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
   List<dynamic> schedules = [];
   List<Widget> listOfSchedWidget = [];
 
+  Future<void> updateScheduleItem(
+      int index, Map<String, dynamic> updatedData) async {
+    try {
+      // Get the current user's ID
+
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+
+      // Fetch the 'schedule' array from the document
+
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      // Get the 'schedule' array
+      List<dynamic> schedule = doc.get('schedule');
+      // Check if the index is valid
+      if (index >= 0 && index < schedule.length) {
+        // Update the data at the specified index
+        schedule[index] = updatedData;
+        // Update the entire 'schedule' array in the document
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({'schedule': schedule});
+
+        _fetchScheduleData();
+
+        print('Schedule item at index $index updated successfully!');
+      } else {
+        print('Invalid index for schedule item.');
+      }
+    } catch (e) {
+      print('Error updating schedule item: $e');
+    }
+  }
+
   void showBottomSheet(BuildContext context, int i) {
     bool schedLedState = schedules[i]['ledInfo']['ledState'];
     double schedLedBrightness = schedules[i]['ledInfo']['ledBrightness'];
@@ -108,9 +144,10 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
     int minute = int.parse(parts[1]);
     TimeOfDay? schedTimeTOD = TimeOfDay(hour: hour, minute: minute);
     showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return StatefulBuilder(builder: (context, setState) {
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
             return SizedBox(
               height: 500,
               child: Container(
@@ -131,9 +168,20 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                           FilledButton.icon(
                             label: const Text("Save"),
                             onPressed: () {
-                              setState(() {
-                                // throw everything here
-                              });
+                              String timeString =
+                                  '${schedTimeTOD?.hour.toString().padLeft(2, '0')}:${schedTimeTOD?.minute.toString().padLeft(2, '0')}';
+                              Map<String, dynamic> updatedData = {
+                                'curtainState': schedCurtainState,
+                                'ledInfo': {
+                                  'ledState': schedLedState,
+                                  'ledColor': schedSelectedColor,
+                                  'ledColorValue': schedSelectedColorValue,
+                                  'ledBrightness': schedLedBrightness,
+                                },
+                                'time': timeString,
+                              };
+                              updateScheduleItem(i, updatedData);
+                              Navigator.pop(context);
                             },
                             style: ButtonStyle(
                               backgroundColor: const WidgetStatePropertyAll(
@@ -349,7 +397,6 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                               setState(() {
                                 schedTimeTOD = pickedTime;
                                 schedTimeTOD ??= TimeOfDay.now();
-                                print(schedTimeTOD);
                               });
                             },
                             style: ButtonStyle(
@@ -375,8 +422,10 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                 ),
               ),
             );
-          });
-        });
+          },
+        );
+      },
+    );
   }
 
   List<Widget> obtainSchedWidgetList(List<dynamic> schedule) {
