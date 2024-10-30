@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
           ? FloatingActionButton(
               onPressed: _addSchedule,
               tooltip: 'Add Schedule',
-              backgroundColor: const Color(0xFF383838),
+              backgroundColor: const Color(0xFF737373),
               foregroundColor: Colors.white,
               shape: const CircleBorder(eccentricity: 0.0),
               child: const Icon(Icons.add),
