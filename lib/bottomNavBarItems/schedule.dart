@@ -11,14 +11,21 @@ class ScheduleWidget extends StatefulWidget {
 
 class _ScheduleWidgetState extends State<ScheduleWidget> {
   TextStyle scheduleTimeStyle = const TextStyle(
-      fontSize: 28,
-      color: Colors.white,
-      fontFamily: 'Inter',
-      fontWeight: FontWeight.w900);
+    fontSize: 28,
+    color: Colors.white,
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w900,
+  );
   TextStyle scheduleDescStyle = const TextStyle(
     fontSize: 16,
     color: Colors.white,
     fontFamily: 'Inter',
+  );
+  TextStyle actionTitleStyle = const TextStyle(
+    fontSize: 20,
+    color: Colors.white,
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.bold,
   );
 
   @override
@@ -89,6 +96,289 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
   List<dynamic> schedules = [];
   List<Widget> listOfSchedWidget = [];
 
+  void showBottomSheet(BuildContext context, int i) {
+    bool schedLedState = schedules[i]['ledInfo']['ledState'];
+    double schedLedBrightness = schedules[i]['ledInfo']['ledBrightness'];
+    String schedSelectedColor = schedules[i]['ledInfo']['ledColor'];
+    String schedSelectedColorValue = schedules[i]['ledInfo']['ledColorValue'];
+    double schedCurtainState = schedules[i]['curtainState'];
+    String schedTime = schedules[i]['time'];
+    List<String> parts = schedTime.split(":");
+    int hour = int.parse(parts[0]);
+    int minute = int.parse(parts[1]);
+    TimeOfDay? schedTimeTOD = TimeOfDay(hour: hour, minute: minute);
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return SizedBox(
+              height: 500,
+              child: Container(
+                color: Color(0xFF383838),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Edit Schedule",
+                            style: actionTitleStyle,
+                          ),
+                          FilledButton.icon(
+                            label: const Text("Save"),
+                            onPressed: () {
+                              setState(() {
+                                // throw everything here
+                              });
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: const WidgetStatePropertyAll(
+                                  Color.fromARGB(255, 40, 155, 14)),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              textStyle: const WidgetStatePropertyAll(
+                                TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "LED State ",
+                            style: actionTitleStyle,
+                          ),
+                          Switch(
+                            value: schedLedState,
+                            activeColor: const Color(0xFFd9d9d9),
+                            activeTrackColor: const Color(0xFF737373),
+                            inactiveThumbColor: const Color(0xFF737373),
+                            inactiveTrackColor: const Color(0xFF383838),
+                            onChanged: (value) {
+                              setState(() {
+                                schedLedState = value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Brightness ",
+                            style: actionTitleStyle,
+                          ),
+                          AbsorbPointer(
+                            absorbing: !schedLedState,
+                            child: SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                valueIndicatorTextStyle: const TextStyle(
+                                  color: Colors.black,
+                                ),
+                                showValueIndicator: ShowValueIndicator
+                                    .always, // Always show the value indicator
+                              ),
+                              child: Slider(
+                                value: schedLedBrightness,
+                                onChanged: (value) {
+                                  setState(() {
+                                    schedLedBrightness = value;
+                                  });
+                                },
+                                max: 10,
+                                divisions: 10,
+                                label: schedLedBrightness.round().toString(),
+                                activeColor: const Color(0xFFD9D9D9),
+                                inactiveColor: const Color(0xFF737373),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Color",
+                            style: actionTitleStyle,
+                          ),
+                          AbsorbPointer(
+                            absorbing: !schedLedState,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF555555),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                              child: DropdownButton<String>(
+                                hint: Text(
+                                  schedSelectedColor,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                  ),
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: 'Inter',
+                                ),
+                                dropdownColor: const Color(0xFF555555),
+                                iconSize: 36,
+                                borderRadius: BorderRadius.circular(10),
+                                onChanged: (String? value) {
+                                  List<String> color = value!.split('-');
+                                  setState(() {
+                                    schedSelectedColor = color[0];
+                                    schedSelectedColorValue = color[1];
+                                  });
+                                },
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: "Red-FF0000",
+                                    child: Text("Red"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Orange-FFA500",
+                                    child: Text("Orange"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Yellow-FFFF00",
+                                    child: Text("Yellow"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Green-008000",
+                                    child: Text("Green"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Blue-0000FF",
+                                    child: Text("Blue"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Indigo-4B0082",
+                                    child: Text("Indigo"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Violet-EE82EE",
+                                    child: Text("Violet"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Curtain State",
+                            style: actionTitleStyle,
+                          ),
+                          SliderTheme(
+                            data: SliderTheme.of(context).copyWith(
+                              valueIndicatorTextStyle: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              showValueIndicator: ShowValueIndicator
+                                  .always, // Always show the value indicator
+                            ),
+                            child: Slider(
+                              value: schedCurtainState,
+                              onChanged: (value) {
+                                setState(() {
+                                  schedCurtainState = value;
+                                });
+                              },
+                              max: 5,
+                              divisions: 5,
+                              label: schedCurtainState.round().toString(),
+                              activeColor: const Color(0xFFD9D9D9),
+                              inactiveColor: const Color(0xFF737373),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Time",
+                            style: actionTitleStyle,
+                          ),
+                          FilledButton.icon(
+                            label: Text(schedTimeTOD == null
+                                ? MaterialLocalizations.of(context)
+                                    .formatTimeOfDay(TimeOfDay.now())
+                                : MaterialLocalizations.of(context)
+                                    .formatTimeOfDay(schedTimeTOD!)),
+                            onPressed: () async {
+                              var pickedTime = await showTimePicker(
+                                context: context,
+                                initialEntryMode: TimePickerEntryMode.dial,
+                                initialTime: TimeOfDay.now(),
+                              );
+                              setState(() {
+                                schedTimeTOD = pickedTime;
+                                schedTimeTOD ??= TimeOfDay.now();
+                                print(schedTimeTOD);
+                              });
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: const WidgetStatePropertyAll(
+                                  Color(0xFF555555)),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              textStyle: const WidgetStatePropertyAll(
+                                TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
+          });
+        });
+  }
+
   List<Widget> obtainSchedWidgetList(List<dynamic> schedule) {
     List<Widget> currentSchedList = [];
     if (schedule.length > 0) {
@@ -118,7 +408,9 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                     ),
                     FilledButton.icon(
                       label: const Text("Edit"),
-                      onPressed: () {},
+                      onPressed: () {
+                        showBottomSheet(context, i);
+                      },
                       style: ButtonStyle(
                         padding: WidgetStatePropertyAll(
                             EdgeInsets.symmetric(horizontal: 35)),

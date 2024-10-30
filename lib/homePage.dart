@@ -21,8 +21,6 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   bool _onAddSched = false;
 
-  Future<Map<String, dynamic>>? ledInfo;
-
   void _onBotNavBarItemTapped(int index) async {
     setState(() {
       if (index >= 0 && index <= 3) {
