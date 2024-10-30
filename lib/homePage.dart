@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
           child: (_onAddSched == true)
               ? const AddScheduleWidget()
               : (_selectedIndex == 0)
-                  ? ScheduleWidget(listOfSched: _listOfSchedule)
+                  ? ScheduleWidget()
                   : (_selectedIndex == 1)
                       ? const LEDWidget()
                       : (_selectedIndex == 2)
@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
           ? FloatingActionButton(
               onPressed: _addSchedule,
               tooltip: 'Add Schedule',
-              backgroundColor: const Color(0xFF191919),
+              backgroundColor: const Color(0xFF383838),
               foregroundColor: Colors.white,
               shape: const CircleBorder(eccentricity: 0.0),
               child: const Icon(Icons.add),
