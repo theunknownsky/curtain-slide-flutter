@@ -456,6 +456,12 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
         }
         String ledState = "";
         ledState = schedule[i]['ledInfo']['ledState'] ? "On" : "Off";
+        String timeStr = schedule[i]['time'];
+        List<String> parts = timeStr.split(":");
+        int hour = int.parse(parts[0]);
+        int minute = int.parse(parts[1]);
+        TimeOfDay timeOfSched = TimeOfDay(hour: hour, minute: minute);
+
         currentSchedList.add(
           Container(
             margin: normalMargin,
@@ -470,7 +476,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${schedule[i]['time']}",
+                      "${MaterialLocalizations.of(context).formatTimeOfDay(timeOfSched)}",
                       style: scheduleTimeStyle,
                     ),
                     FilledButton.icon(
