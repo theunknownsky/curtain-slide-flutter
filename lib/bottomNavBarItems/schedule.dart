@@ -27,6 +27,9 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
     fontFamily: 'Inter',
     fontWeight: FontWeight.bold,
   );
+  TextStyle notifStyle = const TextStyle(
+    fontFamily: 'Inter',
+  );
 
   @override
   void initState() {
@@ -95,6 +98,20 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
 
   List<dynamic> schedules = [];
   List<Widget> listOfSchedWidget = [];
+
+  bool checkIfTimeExists(List<dynamic> scheds, TimeOfDay timeToSave) {
+    bool timeExists = false;
+    for (int i = 0; i < scheds.length; i++) {
+      String iterateTimeStr = scheds[i]['time'];
+      String timeString =
+          '${timeToSave.hour.toString().padLeft(2, '0')}:${timeToSave.minute.toString().padLeft(2, '0')}';
+      if (timeString == iterateTimeStr) {
+        timeExists = true;
+        break;
+      }
+    }
+    return timeExists;
+  }
 
   Future<void> updateScheduleItem(
       int index, Map<String, dynamic> updatedData) async {
@@ -188,17 +205,39 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                             onPressed: () {
                               String timeString =
                                   '${schedTimeTOD?.hour.toString().padLeft(2, '0')}:${schedTimeTOD?.minute.toString().padLeft(2, '0')}';
-                              Map<String, dynamic> updatedData = {
-                                'curtainState': schedCurtainState,
-                                'ledInfo': {
-                                  'ledState': schedLedState,
-                                  'ledColor': schedSelectedColor,
-                                  'ledColorValue': schedSelectedColorValue,
-                                  'ledBrightness': schedLedBrightness,
-                                },
-                                'time': timeString,
-                              };
-                              updateScheduleItem(i, updatedData);
+                              if (!checkIfTimeExists(
+                                  schedules, schedTimeTOD!)) {
+                                Map<String, dynamic> updatedData = {
+                                  'curtainState': schedCurtainState,
+                                  'ledInfo': {
+                                    'ledState': schedLedState,
+                                    'ledColor': schedSelectedColor,
+                                    'ledColorValue': schedSelectedColorValue,
+                                    'ledBrightness': schedLedBrightness,
+                                  },
+                                  'time': timeString,
+                                };
+                                updateScheduleItem(i, updatedData);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      "Schedule successfully saved.",
+                                      style: notifStyle,
+                                    ),
+                                    duration: Duration(seconds: 3),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      "Time already exists.",
+                                      style: notifStyle,
+                                    ),
+                                    duration: Duration(seconds: 3),
+                                  ),
+                                );
+                              }
                               Navigator.pop(context);
                             },
                             style: ButtonStyle(

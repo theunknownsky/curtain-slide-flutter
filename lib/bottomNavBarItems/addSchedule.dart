@@ -28,6 +28,17 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
     color: Colors.white,
     fontFamily: 'Inter',
   );
+  TextStyle notifStyle = const TextStyle(
+    fontFamily: 'Inter',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchScheduleData();
+  }
+
+  List<dynamic> schedules = [];
 
   void _ledChange(bool value) {
     setState(() {
@@ -56,6 +67,35 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
       currentCurtainCloseness = value;
       print("Current Curtain Closeness: $currentCurtainCloseness");
     });
+  }
+
+  Future<void> _fetchScheduleData() async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    if (doc.exists) {
+      setState(() {
+        schedules = doc.get('schedule');
+      });
+    } else {
+      print('User document does not exist.');
+    }
+  }
+
+  bool checkIfTimeExists(List<dynamic> scheds, TimeOfDay timeToSave) {
+    bool timeExists = false;
+    for (int i = 0; i < scheds.length; i++) {
+      String iterateTimeStr = scheds[i]['time'];
+      String timeString =
+          '${timeToSave.hour.toString().padLeft(2, '0')}:${timeToSave.minute.toString().padLeft(2, '0')}';
+      if (timeString == iterateTimeStr) {
+        timeExists = true;
+        break;
+      }
+    }
+    return timeExists;
   }
 
   Future<void> addScheduleFunc() async {
@@ -106,7 +146,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
         .collection('users')
         .doc(userId)
         .update({'schedule': schedule});
-        
+
     print('Schedule entry added successfully!');
     Navigator.pushReplacement(
       context,
@@ -439,7 +479,30 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                     ),
                     FilledButton.icon(
                       label: const Text("Save"),
-                      onPressed: addScheduleFunc,
+                      onPressed: () {
+                        if (!checkIfTimeExists(schedules, selectedTime!)) {
+                          addScheduleFunc();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Schedule successfully saved.",
+                                style: notifStyle,
+                              ),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Time already exists.",
+                                style: notifStyle,
+                              ),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      },
                       style: ButtonStyle(
                         backgroundColor:
                             const WidgetStatePropertyAll(Color(0xFF383838)),
