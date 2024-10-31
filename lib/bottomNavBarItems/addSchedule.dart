@@ -62,6 +62,11 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
     final user = FirebaseAuth.instance.currentUser!;
     final userId = user.uid;
 
+    DocumentSnapshot doc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    // Get the 'schedule' array
+    List<dynamic> schedule = doc.get('schedule');
+
     String timeString =
         '${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}';
 
@@ -77,15 +82,36 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
         'ledState': ledState, // Replace with your desired value
       },
     };
-    // Update the user's schedule in Firestore
-    await FirebaseFirestore.instance.collection('users').doc(userId).update({
-      'schedule': FieldValue.arrayUnion([newScheduleEntry])
+
+    schedule.add(newScheduleEntry);
+    schedule.sort((a, b) {
+      TimeOfDay timeA = TimeOfDay(
+        hour: int.parse(a['time'].split(':')[0]),
+        minute: int.parse(a['time'].split(':')[1]),
+      );
+      TimeOfDay timeB = TimeOfDay(
+        hour: int.parse(b['time'].split(':')[0]),
+        minute: int.parse(b['time'].split(':')[1]),
+      );
+
+      if (timeA.hour == timeB.hour) {
+        return timeA.minute.compareTo(timeB.minute);
+      } else {
+        return timeA.hour.compareTo(timeB.hour);
+      }
     });
+
+    // Update the user's schedule in Firestore
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .update({'schedule': schedule});
+        
     print('Schedule entry added successfully!');
     Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
   }
 
   @override

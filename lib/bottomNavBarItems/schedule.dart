@@ -115,6 +115,24 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
       if (index >= 0 && index < schedule.length) {
         // Update the data at the specified index
         schedule[index] = updatedData;
+
+        schedule.sort((a, b) {
+          TimeOfDay timeA = TimeOfDay(
+            hour: int.parse(a['time'].split(':')[0]),
+            minute: int.parse(a['time'].split(':')[1]),
+          );
+          TimeOfDay timeB = TimeOfDay(
+            hour: int.parse(b['time'].split(':')[0]),
+            minute: int.parse(b['time'].split(':')[1]),
+          );
+
+          if (timeA.hour == timeB.hour) {
+            return timeA.minute.compareTo(timeB.minute);
+          } else {
+            return timeA.hour.compareTo(timeB.hour);
+          }
+        });
+
         // Update the entire 'schedule' array in the document
         await FirebaseFirestore.instance
             .collection('users')
