@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:hive_flutter/hive_flutter.dart';
 
 class CurtainWidget extends StatefulWidget {
   const CurtainWidget({super.key});
@@ -11,6 +12,8 @@ class CurtainWidget extends StatefulWidget {
 }
 
 class _CurtainWidgetState extends State<CurtainWidget> {
+  final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+
   TextStyle actionTitleStyle = const TextStyle(
     fontSize: 28,
     color: Colors.white,
@@ -35,11 +38,20 @@ class _CurtainWidgetState extends State<CurtainWidget> {
   bool actionBlock = false;
 
   void _curtainStateChange(int curtainMoveState) {
-    FirebaseFirestore.instance
-        .collection('users') // Replace with your collection name
-        .doc(
-            FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
-        .update({'curtainState': curtainMoveState});
+    _manualCurtainStateChange(curtainMoveState);
+    Timer(Duration(seconds: delay), () {
+      setState(() {
+        _manualCurtainStateChange(1);
+        actionBlock = false;
+      });
+    });
+  }
+
+  void _manualCurtainStateChange(int curtainMoveState) {
+    setState(() {
+      userBox.put('curtainState', curtainMoveState);
+      print(userBox.get('curtainState'));
+    });
   }
 
   @override
@@ -69,7 +81,6 @@ class _CurtainWidgetState extends State<CurtainWidget> {
         ),
       );
     }
-    _curtainStateChange(1);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -94,7 +105,10 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("Closing curtain...", style: notifStyle,),
+                            content: Text(
+                              "Closing curtain...",
+                              style: notifStyle,
+                            ),
                             duration: Duration(seconds: delay),
                           ),
                         );
@@ -102,11 +116,6 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                           actionBlock = true;
                         });
                         _curtainStateChange(0);
-                        Timer(Duration(seconds: delay), () {
-                          setState(() {
-                            actionBlock = false;
-                          });
-                        });
                       },
                       style: ButtonStyle(
                         backgroundColor:
@@ -161,7 +170,10 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("Opening curtain...", style: notifStyle,),
+                            content: Text(
+                              "Opening curtain...",
+                              style: notifStyle,
+                            ),
                             duration: Duration(seconds: delay),
                           ),
                         );
@@ -244,16 +256,19 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                         ),
                       ),
                       onLongPress: () {
-                        _curtainStateChange(0);
+                        _manualCurtainStateChange(0);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("Closing curtain...", style: notifStyle,),
+                            content: Text(
+                              "Closing curtain...",
+                              style: notifStyle,
+                            ),
                             duration: const Duration(seconds: 1),
                           ),
                         );
                       },
                       onLongPressUp: () {
-                        _curtainStateChange(1);
+                        _manualCurtainStateChange(1);
                       },
                     ),
                   ],
@@ -309,16 +324,19 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                         ),
                       ),
                       onLongPress: () {
-                        _curtainStateChange(2);
+                        _manualCurtainStateChange(2);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("Opening curtain...", style: notifStyle,),
+                            content: Text(
+                              "Opening curtain...",
+                              style: notifStyle,
+                            ),
                             duration: const Duration(seconds: 1),
                           ),
                         );
                       },
                       onLongPressUp: () {
-                        _curtainStateChange(1);
+                        _manualCurtainStateChange(1);
                       },
                     ),
                   ],
