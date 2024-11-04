@@ -1,6 +1,7 @@
 import 'package:curtainslide/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class AccountWidget extends StatefulWidget {
   const AccountWidget({super.key});
@@ -10,6 +11,9 @@ class AccountWidget extends StatefulWidget {
 }
 
 class _AccountWidgetState extends State<AccountWidget> {
+
+  var userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+
   TextStyle actionTitleStyle = const TextStyle(
     fontSize: 28,
     color: Colors.white,
@@ -22,8 +26,7 @@ class _AccountWidgetState extends State<AccountWidget> {
   );
 
   String? getUserEmail() {
-    final user = FirebaseAuth.instance.currentUser;
-    return user?.email;
+    return '${userBox.get('email')}';
   }
 
   void signOutUser() async {

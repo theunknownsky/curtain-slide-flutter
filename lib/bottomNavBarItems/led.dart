@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class LEDWidget extends StatefulWidget {
   const LEDWidget({super.key});
@@ -12,6 +13,9 @@ class LEDWidget extends StatefulWidget {
 class _LEDWidgetState extends State<LEDWidget> {
   _LEDWidgetState();
   TextEditingController colorController = TextEditingController();
+
+  final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+
   bool ledState = false;
   double currentBrightness = 1;
   String selectedColor = '';
@@ -27,6 +31,17 @@ class _LEDWidgetState extends State<LEDWidget> {
     color: Colors.white,
     fontFamily: 'Inter',
   );
+
+  Future<void> _fetchLedInfoFromHive() async {
+    setState(() {
+      ledInfo = userBox.get('ledInfo');
+      ledState = ledInfo?['ledStatus'];
+      selectedColor = ledInfo?['ledColor'];
+      selectedColorValue = ledInfo?['ledColorValue'];
+      currentBrightness = ledInfo?['ledBrightness'];
+    });
+    print(ledInfo);
+  }
 
   Map<String, dynamic>? ledInfo;
 
@@ -55,7 +70,7 @@ class _LEDWidgetState extends State<LEDWidget> {
   @override
   void initState() {
     super.initState();
-    _fetchLedInfo();
+    _fetchLedInfoFromHive();
     print("LED Info");
   }
 
@@ -63,24 +78,18 @@ class _LEDWidgetState extends State<LEDWidget> {
     setState(() {
       ledState = value;
       print("Current LED State: $ledState");
+      ledInfo?['ledStatus'] = ledState;
+      userBox.put('ledInfo', ledInfo);
     });
-    FirebaseFirestore.instance
-        .collection('users') // Replace with your collection name
-        .doc(
-            FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
-        .update({'ledInfo.ledState': ledState});
   }
 
   void _brightnessChange(double value) {
     setState(() {
       currentBrightness = value;
       print("Current brightness: $currentBrightness");
+      ledInfo?['ledBrightness'] = currentBrightness;
+      userBox.put('ledInfo', ledInfo);
     });
-    FirebaseFirestore.instance
-        .collection('users') // Replace with your collection name
-        .doc(
-            FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
-        .update({'ledInfo.ledBrightness': currentBrightness});
   }
 
   void _colorChange(String value) {
@@ -88,17 +97,10 @@ class _LEDWidgetState extends State<LEDWidget> {
     setState(() {
       selectedColor = color[0];
       selectedColorValue = color[1];
+      ledInfo?['ledColor'] = selectedColor;
+      ledInfo?['ledColorValue'] = selectedColorValue;
+      userBox.put('ledInfo', ledInfo);
     });
-    FirebaseFirestore.instance
-        .collection('users') // Replace with your collection name
-        .doc(
-            FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
-        .update({'ledInfo.ledColor': selectedColor});
-    FirebaseFirestore.instance
-        .collection('users') // Replace with your collection name
-        .doc(
-            FirebaseAuth.instance.currentUser!.uid) // Get the current user's ID
-        .update({'ledInfo.ledColorValue': selectedColorValue});
   }
 
   @override

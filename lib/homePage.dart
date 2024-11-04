@@ -12,11 +12,6 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-// Schedule data
-List<Widget> _listOfSchedule = [];
-
-// LED data
-
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   bool _onAddSched = false;
