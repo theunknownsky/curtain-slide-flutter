@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -13,6 +12,8 @@ class LEDWidget extends StatefulWidget {
 class _LEDWidgetState extends State<LEDWidget> {
   _LEDWidgetState();
   TextEditingController colorController = TextEditingController();
+
+  Map<dynamic, dynamic>? ledInfo;
 
   final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
 
@@ -40,44 +41,17 @@ class _LEDWidgetState extends State<LEDWidget> {
       selectedColorValue = ledInfo?['ledColorValue'];
       currentBrightness = ledInfo?['ledBrightness'];
     });
-    print(ledInfo);
-  }
-
-  Map<String, dynamic>? ledInfo;
-
-  Future<void> _fetchLedInfo() async {
-    DocumentSnapshot doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-
-    if (doc.exists) {
-      setState(() {
-        ledInfo = doc.data() as Map<String, dynamic>;
-        ledState = ledInfo?['ledInfo']['ledState'];
-        selectedColor = ledInfo?['ledInfo']['ledColor'];
-        currentBrightness = ledInfo?['ledInfo']['ledBrightness'].toDouble();
-        print("LED State: $ledState");
-        print("LED Color: $selectedColor");
-        print("LED Brightness: $currentBrightness");
-      });
-    } else {
-      // Handle the case where the document doesn't exist
-      print('Document does not exist');
-    }
   }
 
   @override
   void initState() {
     super.initState();
     _fetchLedInfoFromHive();
-    print("LED Info");
   }
 
   void _ledChange(bool value) {
     setState(() {
       ledState = value;
-      print("Current LED State: $ledState");
       ledInfo?['ledStatus'] = ledState;
       userBox.put('ledInfo', ledInfo);
     });
@@ -86,7 +60,6 @@ class _LEDWidgetState extends State<LEDWidget> {
   void _brightnessChange(double value) {
     setState(() {
       currentBrightness = value;
-      print("Current brightness: $currentBrightness");
       ledInfo?['ledBrightness'] = currentBrightness;
       userBox.put('ledInfo', ledInfo);
     });
@@ -190,7 +163,6 @@ class _LEDWidgetState extends State<LEDWidget> {
                           borderRadius: BorderRadius.circular(10),
                           onChanged: (String? value) {
                             _colorChange(value!);
-                            print(value);
                           },
                           items: const [
                             DropdownMenuItem(

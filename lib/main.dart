@@ -1,8 +1,6 @@
 import 'package:curtainslide/homePage.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 import 'loginPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -43,18 +41,24 @@ class _BufferPageState extends State<BufferPage> {
 
   Future<void> initUserBox() async {
     await Hive.initFlutter();
-    await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
-    final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
-    Map<String, dynamic> ledInfo = {
-      'ledStatus': true,
-      'ledColor': 'Red',
-      'ledColorValue': 'FF0000',
-      'ledBrightness': 5.0
-    };
-    userBox.put('ledInfo', ledInfo);
-    userBox.put('curtainState', 1);
-    userBox.put('email', FirebaseAuth.instance.currentUser!.email);
-    userBox.put('schedules', {});
+    Future<bool> boxExist =
+        Hive.boxExists(FirebaseAuth.instance.currentUser!.uid);
+    if (!(await boxExist)) {
+      await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
+      final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+      Map<String, dynamic> ledInfo = {
+        'ledStatus': true,
+        'ledColor': 'Red',
+        'ledColorValue': 'FF0000',
+        'ledBrightness': 5.0
+      };
+      userBox.put('ledInfo', ledInfo);
+      userBox.put('curtainState', 1);
+      userBox.put('email', FirebaseAuth.instance.currentUser!.email);
+      userBox.put('schedules', {});
+    } else {
+      await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
+    }
   }
 
   @override
