@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curtainslide/homePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class AddScheduleWidget extends StatefulWidget {
   const AddScheduleWidget({super.key});
@@ -18,6 +18,8 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
   double currentCurtainCloseness = 5;
   TimeOfDay? selectedTime = TimeOfDay.now();
 
+  final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+
   TextStyle actionTitleStyle = const TextStyle(
     fontSize: 28,
     color: Colors.white,
@@ -31,12 +33,6 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
   TextStyle notifStyle = const TextStyle(
     fontFamily: 'Inter',
   );
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchScheduleData();
-  }
 
   List<dynamic> schedules = [];
 
@@ -69,25 +65,11 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
     });
   }
 
-  Future<void> _fetchScheduleData() async {
-    DocumentSnapshot doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-
-    if (doc.exists) {
-      setState(() {
-        schedules = doc.get('schedule');
-      });
-    } else {
-      print('User document does not exist.');
-    }
-  }
-
-  bool checkIfTimeExists(List<dynamic> scheds, TimeOfDay timeToSave) {
+  bool checkIfTimeExists(TimeOfDay timeToSave) {
     bool timeExists = false;
-    for (int i = 0; i < scheds.length; i++) {
-      String iterateTimeStr = scheds[i]['time'];
+    List<dynamic> schedules = userBox.get('schedules');
+    for (int i = 0; i < schedules.length; i++) {
+      String iterateTimeStr = schedules[i]['time'];
       String timeString =
           '${timeToSave.hour.toString().padLeft(2, '0')}:${timeToSave.minute.toString().padLeft(2, '0')}';
       if (timeString == iterateTimeStr) {
@@ -99,13 +81,8 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
   }
 
   Future<void> addScheduleFunc() async {
-    final user = FirebaseAuth.instance.currentUser!;
-    final userId = user.uid;
-
-    DocumentSnapshot doc =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    // Get the 'schedule' array
-    List<dynamic> schedule = doc.get('schedule');
+    // Get the 'schedules' array
+    List<dynamic> schedules = userBox.get('schedules');
 
     String timeString =
         '${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}';
@@ -123,8 +100,8 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
       },
     };
 
-    schedule.add(newScheduleEntry);
-    schedule.sort((a, b) {
+    schedules.add(newScheduleEntry);
+    schedules.sort((a, b) {
       TimeOfDay timeA = TimeOfDay(
         hour: int.parse(a['time'].split(':')[0]),
         minute: int.parse(a['time'].split(':')[1]),
@@ -142,12 +119,10 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
     });
 
     // Update the user's schedule in Firestore
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .update({'schedule': schedule});
+    userBox.put('schedules', schedules);
 
     print('Schedule entry added successfully!');
+    print('Sorted schedule: ${userBox.get('schedules')}');
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const HomePage()),
@@ -480,7 +455,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                     FilledButton.icon(
                       label: const Text("Save"),
                       onPressed: () {
-                        if (!checkIfTimeExists(schedules, selectedTime!)) {
+                        if (!checkIfTimeExists(selectedTime!)) {
                           addScheduleFunc();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

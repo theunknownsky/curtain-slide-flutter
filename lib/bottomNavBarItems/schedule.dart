@@ -10,6 +10,9 @@ class ScheduleWidget extends StatefulWidget {
 }
 
 class _ScheduleWidgetState extends State<ScheduleWidget> {
+
+
+  
   TextStyle scheduleTimeStyle = const TextStyle(
     fontSize: 28,
     color: Colors.white,

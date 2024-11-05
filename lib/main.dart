@@ -58,6 +58,8 @@ class _BufferPageState extends State<BufferPage> {
       userBox.put('schedules', {});
     } else {
       await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
+      final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+      print(userBox.values);
     }
   }
 
