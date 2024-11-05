@@ -462,7 +462,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                                 "Schedule successfully saved.",
                                 style: notifStyle,
                               ),
-                              duration: Duration(seconds: 3),
+                              duration: Duration(seconds: 2),
                             ),
                           );
                         } else {

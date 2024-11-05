@@ -263,12 +263,13 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                               "Closing curtain...",
                               style: notifStyle,
                             ),
-                            duration: const Duration(seconds: 1),
+                            duration: Duration(seconds: delay),
                           ),
                         );
                       },
                       onLongPressUp: () {
                         _manualCurtainStateChange(1);
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       },
                     ),
                   ],
@@ -331,12 +332,13 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                               "Opening curtain...",
                               style: notifStyle,
                             ),
-                            duration: const Duration(seconds: 1),
+                            duration: Duration(seconds: delay),
                           ),
                         );
                       },
                       onLongPressUp: () {
                         _manualCurtainStateChange(1);
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       },
                     ),
                   ],
