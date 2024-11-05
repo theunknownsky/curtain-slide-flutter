@@ -154,7 +154,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
     List<String> parts = schedTime.split(":");
     int hour = int.parse(parts[0]);
     int minute = int.parse(parts[1]);
-    TimeOfDay? schedTimeTOD = TimeOfDay(hour: hour, minute: minute);
+    TimeOfDay schedTimeTOD = TimeOfDay(hour: hour, minute: minute);
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -181,9 +181,9 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                             label: const Text("Save"),
                             onPressed: () {
                               String timeString =
-                                  '${schedTimeTOD?.hour.toString().padLeft(2, '0')}:${schedTimeTOD?.minute.toString().padLeft(2, '0')}';
+                                  '${schedTimeTOD.hour.toString().padLeft(2, '0')}:${schedTimeTOD.minute.toString().padLeft(2, '0')}';
                               if (!checkIfTimeExists(
-                                  schedules, schedTimeTOD!)) {
+                                  schedules, schedTimeTOD)) {
                                 Map<String, dynamic> updatedData = {
                                   'curtainState': schedCurtainState,
                                   'ledInfo': {
@@ -417,20 +417,16 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                             style: actionTitleStyle,
                           ),
                           FilledButton.icon(
-                            label: Text(schedTimeTOD == null
-                                ? MaterialLocalizations.of(context)
-                                    .formatTimeOfDay(TimeOfDay.now())
-                                : MaterialLocalizations.of(context)
-                                    .formatTimeOfDay(schedTimeTOD!)),
+                            label: Text(MaterialLocalizations.of(context)
+                                .formatTimeOfDay(schedTimeTOD)),
                             onPressed: () async {
                               var pickedTime = await showTimePicker(
                                 context: context,
                                 initialEntryMode: TimePickerEntryMode.dial,
-                                initialTime: TimeOfDay.now(),
+                                initialTime: schedTimeTOD,
                               );
                               setState(() {
-                                schedTimeTOD = pickedTime;
-                                schedTimeTOD ??= TimeOfDay.now();
+                                schedTimeTOD = pickedTime ?? schedTimeTOD;
                               });
                             },
                             style: ButtonStyle(

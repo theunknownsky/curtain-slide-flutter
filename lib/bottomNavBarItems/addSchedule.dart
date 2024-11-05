@@ -16,7 +16,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
   String selectedColor = "Red";
   String selectedColorValue = "FF0000";
   double currentCurtainCloseness = 5;
-  TimeOfDay? selectedTime = TimeOfDay.now();
+  TimeOfDay selectedTime = TimeOfDay.now();
 
   final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
 
@@ -85,7 +85,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
     List<dynamic> schedules = userBox.get('schedules');
 
     String timeString =
-        '${selectedTime?.hour.toString().padLeft(2, '0')}:${selectedTime?.minute.toString().padLeft(2, '0')}';
+        '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
 
     // Create the map to add to the schedule
     final newScheduleEntry = {
@@ -386,20 +386,16 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                       style: actionTitleStyle,
                     ),
                     FilledButton.icon(
-                      label: Text(selectedTime == null
-                          ? MaterialLocalizations.of(context)
-                              .formatTimeOfDay(TimeOfDay.now())
-                          : MaterialLocalizations.of(context)
-                              .formatTimeOfDay(selectedTime!)),
+                      label: Text(MaterialLocalizations.of(context)
+                              .formatTimeOfDay(selectedTime)),
                       onPressed: () async {
                         var pickedTime = await showTimePicker(
                           context: context,
                           initialEntryMode: TimePickerEntryMode.dial,
-                          initialTime: TimeOfDay.now(),
+                          initialTime: selectedTime,
                         );
                         setState(() {
-                          selectedTime = pickedTime;
-                          selectedTime ??= TimeOfDay.now();
+                          selectedTime = pickedTime ?? selectedTime;
                           print(selectedTime);
                         });
                       },
@@ -454,7 +450,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                     FilledButton.icon(
                       label: const Text("Save"),
                       onPressed: () {
-                        if (!checkIfTimeExists(selectedTime!)) {
+                        if (!checkIfTimeExists(selectedTime)) {
                           addScheduleFunc();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
