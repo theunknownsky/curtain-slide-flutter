@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -11,7 +10,6 @@ class ScheduleWidget extends StatefulWidget {
 }
 
 class _ScheduleWidgetState extends State<ScheduleWidget> {
-
   TextStyle scheduleTimeStyle = const TextStyle(
     fontSize: 28,
     color: Colors.white,
@@ -41,25 +39,14 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
 
   Future<void> deleteScheduleItem(int index) async {
     try {
-      // Get the current user's ID
-      String userId = FirebaseAuth.instance.currentUser!.uid;
-      // Fetch the 'schedule' array from the document
-      DocumentSnapshot doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
-      // Get the 'schedule' array
-      List<dynamic> schedule = doc.get('schedule');
-      // Remove the item at the specified index
-      schedule.removeAt(index);
-      // Update the entire 'schedule' array in the document
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .update({'schedule': schedule});
       setState(() {
+        // Remove the item at the specified index
         schedules.removeAt(index);
+        // Update the entire 'schedule' array in the document
+        userBox.put('schedules', schedules);
         listOfSchedWidget.removeAt(index);
+        schedules = userBox.get('schedules');
+        listOfSchedWidget = obtainSchedWidgetList(schedules);
       });
       print('Schedule item at index $index deleted successfully!');
     } catch (e) {
@@ -118,24 +105,13 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
   Future<void> updateScheduleItem(
       int index, Map<String, dynamic> updatedData) async {
     try {
-      // Get the current user's ID
-
-      String userId = FirebaseAuth.instance.currentUser!.uid;
-
-      // Fetch the 'schedule' array from the document
-
-      DocumentSnapshot doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
       // Get the 'schedule' array
-      List<dynamic> schedule = doc.get('schedule');
       // Check if the index is valid
-      if (index >= 0 && index < schedule.length) {
+      if (index >= 0 && index < schedules.length) {
         // Update the data at the specified index
-        schedule[index] = updatedData;
+        schedules[index] = updatedData;
 
-        schedule.sort((a, b) {
+        schedules.sort((a, b) {
           TimeOfDay timeA = TimeOfDay(
             hour: int.parse(a['time'].split(':')[0]),
             minute: int.parse(a['time'].split(':')[1]),
@@ -153,10 +129,9 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
         });
 
         // Update the entire 'schedule' array in the document
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .update({'schedule': schedule});
+        setState(() {
+          userBox.put('schedules', schedules);
+        });
 
         _fetchScheduleData();
 
@@ -609,7 +584,6 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
   late Box<dynamic> userBox;
 
   Future<void> _fetchScheduleData() async {
-
     await Hive.initFlutter();
     await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
     userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
@@ -619,7 +593,6 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
       schedules = userBox.get('schedules');
       listOfSchedWidget = obtainSchedWidgetList(schedules);
     });
-    
   }
 
   @override

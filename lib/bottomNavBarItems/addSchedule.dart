@@ -122,7 +122,6 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
     userBox.put('schedules', schedules);
 
     print('Schedule entry added successfully!');
-    print('Sorted schedule: ${userBox.get('schedules')}');
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const HomePage()),
