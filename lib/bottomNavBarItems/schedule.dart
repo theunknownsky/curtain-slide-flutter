@@ -64,7 +64,6 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                print("Caedrel just canceled");
                 Navigator.of(context).pop();
               },
               child: const Text('Cancel'),
@@ -72,7 +71,6 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
             TextButton(
               onPressed: () {
                 // Perform action on confirmation
-                print("Caedrel hit malz ult to index $index!");
                 Navigator.of(context).pop();
                 deleteScheduleItem(index);
                 setState(() {});
@@ -163,7 +161,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
             return SizedBox(
               height: 500,
               child: Container(
-                color: Color(0xFF383838),
+                color: const Color(0xFF383838),
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
@@ -201,7 +199,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                                       "Schedule successfully saved.",
                                       style: notifStyle,
                                     ),
-                                    duration: Duration(seconds: 3),
+                                    duration: const Duration(seconds: 3),
                                   ),
                                 );
                               } else {
@@ -211,7 +209,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                                       "Time already exists.",
                                       style: notifStyle,
                                     ),
-                                    duration: Duration(seconds: 3),
+                                    duration: const Duration(seconds: 3),
                                   ),
                                 );
                               }
@@ -261,7 +259,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 16),
+                      margin: const EdgeInsets.only(left: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -298,7 +296,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -374,7 +372,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -408,7 +406,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -460,7 +458,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
 
   List<Widget> obtainSchedWidgetList(List<dynamic> schedule) {
     List<Widget> currentSchedList = [];
-    if (schedule.length > 0) {
+    if (schedule.isNotEmpty) {
       for (int i = 0; i < schedule.length; i++) {
         EdgeInsets normalMargin = const EdgeInsets.fromLTRB(24, 16, 24, 0);
         if (i == schedule.length - 1) {
@@ -488,7 +486,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${MaterialLocalizations.of(context).formatTimeOfDay(timeOfSched)}",
+                      MaterialLocalizations.of(context).formatTimeOfDay(timeOfSched),
                       style: scheduleTimeStyle,
                     ),
                     FilledButton.icon(
@@ -497,7 +495,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                         showBottomSheet(context, i);
                       },
                       style: ButtonStyle(
-                        padding: WidgetStatePropertyAll(
+                        padding: const WidgetStatePropertyAll(
                             EdgeInsets.symmetric(horizontal: 35)),
                         backgroundColor:
                             const WidgetStatePropertyAll(Color(0xFF383838)),
@@ -583,7 +581,6 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
     await Hive.initFlutter();
     await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
     userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
-    print(userBox.values);
 
     setState(() {
       schedules = userBox.get('schedules');
@@ -595,10 +592,10 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
   Widget build(BuildContext context) {
     // printSchedulesProperly();
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Column(
         children: listOfSchedWidget,
       ),
-      padding: EdgeInsets.symmetric(vertical: 2.0),
     );
   }
 }

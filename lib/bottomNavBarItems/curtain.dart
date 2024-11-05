@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:hive_flutter/hive_flutter.dart';
 
 class CurtainWidget extends StatefulWidget {
@@ -50,7 +49,6 @@ class _CurtainWidgetState extends State<CurtainWidget> {
   void _manualCurtainStateChange(int curtainMoveState) {
     setState(() {
       userBox.put('curtainState', curtainMoveState);
-      print(userBox.get('curtainState'));
     });
   }
 

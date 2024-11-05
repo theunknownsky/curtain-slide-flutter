@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
           child: (_onAddSched == true)
               ? const AddScheduleWidget()
               : (_selectedIndex == 0)
-                  ? ScheduleWidget()
+                  ? const ScheduleWidget()
                   : (_selectedIndex == 1)
                       ? const LEDWidget()
                       : (_selectedIndex == 2)

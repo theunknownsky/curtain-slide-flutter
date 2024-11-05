@@ -39,14 +39,12 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
   void _ledChange(bool value) {
     setState(() {
       ledState = value;
-      print("Current LED State: $ledState");
     });
   }
 
   void _brightnessChange(double value) {
     setState(() {
       currentBrightness = value;
-      print("Current brightness: $currentBrightness");
     });
   }
 
@@ -61,7 +59,6 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
   void _curtainCloseness(double value) {
     setState(() {
       currentCurtainCloseness = value;
-      print("Current Curtain Closeness: $currentCurtainCloseness");
     });
   }
 
@@ -121,7 +118,6 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
     // Update the user's schedule in Firestore
     userBox.put('schedules', schedules);
 
-    print('Schedule entry added successfully!');
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const HomePage()),
@@ -215,7 +211,6 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                           borderRadius: BorderRadius.circular(10),
                           onChanged: (String? value) {
                             _colorChange(value!);
-                            print(value);
                           },
                           items: const [
                             DropdownMenuItem(
@@ -396,7 +391,6 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                         );
                         setState(() {
                           selectedTime = pickedTime ?? selectedTime;
-                          print(selectedTime);
                         });
                       },
                       style: ButtonStyle(
@@ -458,7 +452,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                                 "Schedule successfully saved.",
                                 style: notifStyle,
                               ),
-                              duration: Duration(seconds: 2),
+                              duration: const Duration(seconds: 2),
                             ),
                           );
                         } else {
@@ -468,7 +462,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                                 "Time already exists.",
                                 style: notifStyle,
                               ),
-                              duration: Duration(seconds: 3),
+                              duration: const Duration(seconds: 3),
                             ),
                           );
                         }
