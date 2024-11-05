@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class ScheduleWidget extends StatefulWidget {
   const ScheduleWidget({super.key});
@@ -11,8 +12,6 @@ class ScheduleWidget extends StatefulWidget {
 
 class _ScheduleWidgetState extends State<ScheduleWidget> {
 
-
-  
   TextStyle scheduleTimeStyle = const TextStyle(
     fontSize: 28,
     color: Colors.white,
@@ -607,20 +606,20 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
     return currentSchedList;
   }
 
-  Future<void> _fetchScheduleData() async {
-    DocumentSnapshot doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
+  late Box<dynamic> userBox;
 
-    if (doc.exists) {
-      setState(() {
-        schedules = doc.get('schedule');
-        listOfSchedWidget = obtainSchedWidgetList(schedules);
-      });
-    } else {
-      print('User document does not exist.');
-    }
+  Future<void> _fetchScheduleData() async {
+
+    await Hive.initFlutter();
+    await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
+    userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+    print(userBox.values);
+
+    setState(() {
+      schedules = userBox.get('schedules');
+      listOfSchedWidget = obtainSchedWidgetList(schedules);
+    });
+    
   }
 
   @override
