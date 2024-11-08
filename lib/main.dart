@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:ui';
-
 import 'package:curtainslide/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -15,20 +14,24 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  if (isLoggedIn()) {
+    initializeService();
+  }
   runApp(const CurtainSlideApp());
 }
 
 Future<void> initializeService() async {
   final service = FlutterBackgroundService();
 
+  service.startService();
   await service.configure(
     iosConfiguration: IosConfiguration(
-      autoStart: true,
+      autoStart: false,
       onForeground: onStart,
       onBackground: onIosBackground,
     ),
     androidConfiguration: AndroidConfiguration(
-      autoStart: true,
+      autoStart: false,
       onStart: onStart,
       isForegroundMode: false,
       autoStartOnBoot: true,
@@ -49,16 +52,35 @@ void onStart(ServiceInstance service) async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await Hive.initFlutter();
-  if(isLoggedIn()){
-    doScheduleBackgroundTask();
-  }
-}
-
-void doScheduleBackgroundTask() async {
-  Timer.periodic(const Duration(seconds: 5), (timer) async {
+  await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
+  final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+  List<dynamic> schedules = userBox.get('schedules');
+  service.on("stop").listen((event) {
+    service.stopSelf();
+    print("background process is now stopped");
+  });
+  service.on("start").listen((event) {
+    print("background process is now starting");
+  });
+  service.on("updateScheds").listen((event) async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await Hive.initFlutter();
     await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
     final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
-    List<dynamic> schedules = userBox.get('schedules');
+    schedules = userBox.get('schedules');
+    timer?.cancel();
+    startScheduleChecker(schedules);
+  });
+  startScheduleChecker(schedules);
+}
+
+Timer? timer;
+
+void startScheduleChecker(List<dynamic> schedules) {
+  print("Start schedule checker: $schedules");
+  timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
     for (int i = 0; i < schedules.length; i++) {
       String timeStr = schedules[i]['time'];
       var parts = timeStr.split(':');
@@ -66,7 +88,14 @@ void doScheduleBackgroundTask() async {
       var minute = int.parse(parts[1]);
       var timeSchedStr = TimeOfDay(hour: hour, minute: minute);
       if (timeSchedStr == TimeOfDay.now()) {
-        print(schedules[i]);
+        print(timeSchedStr);
+        timer.cancel();
+        DateTime now = DateTime.now();
+        int second = now.second;
+        Timer(Duration(seconds: 60-second), () {
+          print("${60-second} seconds has passed. Checking again.");
+          startScheduleChecker(schedules); // Restart the timer after delay
+        });
         break;
       }
     }
@@ -125,7 +154,6 @@ class _BufferPageState extends State<BufferPage> {
     // Navigate to either home or login page based on user state
     if (isLoggedIn()) {
       initUserBox();
-      initializeService();
       return const HomePage();
     } else {
       return const LoginPage();

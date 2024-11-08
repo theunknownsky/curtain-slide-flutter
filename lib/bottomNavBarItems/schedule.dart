@@ -1,6 +1,22 @@
+import 'dart:async';
+import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+void restartService() async {
+  final service = FlutterBackgroundService();
+  service.invoke("stop");
+  if(!await service.isRunning()){
+    print("background service is not running");
+  }
+  service.startService();
+  if(await service.isRunning()){
+    print("background service is now running");
+  }
+  service.invoke("updateScheds");
+}
 
 class ScheduleWidget extends StatefulWidget {
   const ScheduleWidget({super.key});
@@ -49,6 +65,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
         listOfSchedWidget = obtainSchedWidgetList(schedules);
       });
       print('Schedule item at index $index deleted successfully!');
+      restartService();
     } catch (e) {
       print('Error deleting schedule item: $e');
     }
@@ -132,6 +149,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
         });
 
         _fetchScheduleData();
+        restartService();
 
         print('Schedule item at index $index updated successfully!');
       } else {
@@ -180,8 +198,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                             onPressed: () {
                               String timeString =
                                   '${schedTimeTOD.hour.toString().padLeft(2, '0')}:${schedTimeTOD.minute.toString().padLeft(2, '0')}';
-                              if (!checkIfTimeExists(
-                                  schedules, schedTimeTOD)) {
+                              if (!checkIfTimeExists(schedules, schedTimeTOD)) {
                                 Map<String, dynamic> updatedData = {
                                   'curtainState': schedCurtainState,
                                   'ledInfo': {
@@ -486,7 +503,8 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      MaterialLocalizations.of(context).formatTimeOfDay(timeOfSched),
+                      MaterialLocalizations.of(context)
+                          .formatTimeOfDay(timeOfSched),
                       style: scheduleTimeStyle,
                     ),
                     FilledButton.icon(
@@ -599,3 +617,4 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
     );
   }
 }
+

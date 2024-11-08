@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:curtainslide/bottomNavBarItems/account.dart';
 import 'package:curtainslide/bottomNavBarItems/addSchedule.dart';
 import 'package:curtainslide/bottomNavBarItems/curtain.dart';
