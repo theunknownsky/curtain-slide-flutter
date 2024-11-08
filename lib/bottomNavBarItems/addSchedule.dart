@@ -93,7 +93,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
         'ledBrightness': currentBrightness, // Replace with your desired value
         'ledColor': selectedColor, // Replace with your desired value
         'ledColorValue': selectedColorValue, // Replace with your desired value
-        'ledState': ledState, // Replace with your desired value
+        'ledStatus': ledState, // Replace with your desired value
       },
     };
 

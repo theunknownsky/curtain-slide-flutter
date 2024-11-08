@@ -4,7 +4,33 @@ import 'package:curtainslide/bottomNavBarItems/addSchedule.dart';
 import 'package:curtainslide/bottomNavBarItems/curtain.dart';
 import 'package:curtainslide/bottomNavBarItems/led.dart';
 import 'package:curtainslide/bottomNavBarItems/schedule.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+Future<void> initUserBox() async {
+  await Hive.initFlutter();
+  Future<bool> boxExist =
+      Hive.boxExists(FirebaseAuth.instance.currentUser!.uid);
+  if (!(await boxExist)) {
+    await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
+    final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+    Map<String, dynamic> ledInfo = {
+      'ledStatus': true,
+      'ledColor': 'Red',
+      'ledColorValue': 'FF0000',
+      'ledBrightness': 5.0
+    };
+    userBox.put('ledInfo', ledInfo);
+    userBox.put('curtainState', 1);
+    userBox.put('email', FirebaseAuth.instance.currentUser!.email);
+    userBox.put('schedules', []);
+    print("Init Box: ${userBox.values}");
+  } else {
+    await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
+  }
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,6 +46,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    initUserBox();
   }
 
   void _onBotNavBarItemTapped(int index) async {

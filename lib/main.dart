@@ -54,7 +54,7 @@ void onStart(ServiceInstance service) async {
   await Hive.initFlutter();
   await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
   final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
-  List<dynamic> schedules = userBox.get('schedules');
+  List<dynamic> schedules = userBox.get('schedules') ?? [];
   service.on("stop").listen((event) {
     service.stopSelf();
     print("background process is now stopped");
@@ -92,14 +92,35 @@ void startScheduleChecker(List<dynamic> schedules) {
         timer.cancel();
         DateTime now = DateTime.now();
         int second = now.second;
-        Timer(Duration(seconds: 60-second), () {
-          print("${60-second} seconds has passed. Checking again.");
+        Map<String, dynamic> scheduleDetails = {
+          'curtainState': schedules[i]['curtainState'],
+          'ledInfo': {
+            'ledStatus': schedules[i]['ledInfo']['ledStatus'],
+            'ledColor': schedules[i]['ledInfo']['ledColor'],
+            'ledColorValue': schedules[i]['ledInfo']['ledColorValue'],
+            'ledBrightness': schedules[i]['ledInfo']['ledBrightness'],
+          }
+        };
+        print(scheduleDetails);
+        print("Schedule runtype: ${scheduleDetails.runtimeType}");
+        updateCurtainSlideDetails(scheduleDetails);
+        Timer(Duration(seconds: 60 - second), () {
+          print("${60 - second} seconds has passed. Checking again.");
           startScheduleChecker(schedules); // Restart the timer after delay
         });
         break;
       }
     }
   });
+}
+
+void updateCurtainSlideDetails(Map<String, dynamic> schedule) {
+  final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+  // update LED Info (must be turned into function for esp32 communication)
+  Map<String, dynamic> ledInfo = schedule['ledInfo'];
+  userBox.put('ledInfo', ledInfo);
+  print(userBox.values);
+  // update curtain (must be turned into function for esp32 communication)
 }
 
 class CurtainSlideApp extends StatelessWidget {
@@ -127,33 +148,10 @@ bool isLoggedIn() {
 }
 
 class _BufferPageState extends State<BufferPage> {
-  Future<void> initUserBox() async {
-    await Hive.initFlutter();
-    Future<bool> boxExist =
-        Hive.boxExists(FirebaseAuth.instance.currentUser!.uid);
-    if (!(await boxExist)) {
-      await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
-      final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
-      Map<String, dynamic> ledInfo = {
-        'ledStatus': true,
-        'ledColor': 'Red',
-        'ledColorValue': 'FF0000',
-        'ledBrightness': 5.0
-      };
-      userBox.put('ledInfo', ledInfo);
-      userBox.put('curtainState', 1);
-      userBox.put('email', FirebaseAuth.instance.currentUser!.email);
-      userBox.put('schedules', {});
-    } else {
-      await Hive.openBox(FirebaseAuth.instance.currentUser!.uid);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     // Navigate to either home or login page based on user state
     if (isLoggedIn()) {
-      initUserBox();
       return const HomePage();
     } else {
       return const LoginPage();

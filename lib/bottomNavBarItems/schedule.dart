@@ -161,7 +161,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
   }
 
   void showBottomSheet(BuildContext context, int i) {
-    bool schedLedState = schedules[i]['ledInfo']['ledState'];
+    bool schedLedState = schedules[i]['ledInfo']['ledStatus'];
     double schedLedBrightness = schedules[i]['ledInfo']['ledBrightness'];
     String schedSelectedColor = schedules[i]['ledInfo']['ledColor'];
     String schedSelectedColorValue = schedules[i]['ledInfo']['ledColorValue'];
@@ -202,7 +202,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                                 Map<String, dynamic> updatedData = {
                                   'curtainState': schedCurtainState,
                                   'ledInfo': {
-                                    'ledState': schedLedState,
+                                    'ledStatus': schedLedState,
                                     'ledColor': schedSelectedColor,
                                     'ledColorValue': schedSelectedColorValue,
                                     'ledBrightness': schedLedBrightness,
@@ -482,7 +482,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
           normalMargin = const EdgeInsets.fromLTRB(24, 16, 24, 16);
         }
         String ledState = "";
-        ledState = schedule[i]['ledInfo']['ledState'] ? "On" : "Off";
+        ledState = schedule[i]['ledInfo']['ledStatus'] ? "On" : "Off";
         String timeStr = schedule[i]['time'];
         List<String> parts = timeStr.split(":");
         int hour = int.parse(parts[0]);
@@ -601,7 +601,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
     userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
 
     setState(() {
-      schedules = userBox.get('schedules');
+      schedules = userBox.get('schedules') ?? [];
       listOfSchedWidget = obtainSchedWidgetList(schedules);
     });
   }
