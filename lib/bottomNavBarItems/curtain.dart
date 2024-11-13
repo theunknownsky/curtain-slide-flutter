@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -12,6 +13,15 @@ class CurtainWidget extends StatefulWidget {
 
 class _CurtainWidgetState extends State<CurtainWidget> {
   final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
+
+  late String userId;
+  late DatabaseReference curtainStateRef;
+
+  void initState() {
+    super.initState();
+    userId = FirebaseAuth.instance.currentUser!.uid;
+    curtainStateRef = FirebaseDatabase.instance.ref('users/$userId/curtainState');
+  }
 
   TextStyle actionTitleStyle = const TextStyle(
     fontSize: 28,
@@ -32,15 +42,25 @@ class _CurtainWidgetState extends State<CurtainWidget> {
     fontFamily: 'Inter',
   );
 
+  Future<void> updateCurtainState(int newCurtainState) async {
+    try {
+      await curtainStateRef.set(newCurtainState);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   int delay = 5; // full open or close
 
   bool actionBlock = false;
 
   void _curtainStateChange(int curtainMoveState) {
     _manualCurtainStateChange(curtainMoveState);
+    updateCurtainState(curtainMoveState);
     Timer(Duration(seconds: delay), () {
       setState(() {
         _manualCurtainStateChange(1);
+        updateCurtainState(1);
         actionBlock = false;
       });
     });
@@ -50,6 +70,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
     setState(() {
       userBox.put('curtainState', curtainMoveState);
     });
+    updateCurtainState(curtainMoveState);
   }
 
   @override

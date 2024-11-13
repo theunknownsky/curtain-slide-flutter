@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -14,6 +15,9 @@ class _LEDWidgetState extends State<LEDWidget> {
   TextEditingController colorController = TextEditingController();
 
   Map<dynamic, dynamic>? ledInfo;
+
+  late String userId;
+  late DatabaseReference ledInfoRef;
 
   final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
 
@@ -47,25 +51,41 @@ class _LEDWidgetState extends State<LEDWidget> {
   void initState() {
     super.initState();
     _fetchLedInfoFromHive();
+    userId = FirebaseAuth.instance.currentUser!.uid;
+    ledInfoRef = FirebaseDatabase.instance.ref('users/$userId/ledInfo');
   }
 
-  void _ledChange(bool value) {
+  Future<void> _ledChange(bool value) async {
     setState(() {
       ledState = value;
       ledInfo?['ledStatus'] = ledState;
       userBox.put('ledInfo', ledInfo);
     });
+    try {
+      await ledInfoRef.update({
+        'ledStatus': value,
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
-  void _brightnessChange(double value) {
+  Future<void> _brightnessChange(double value) async {
     setState(() {
       currentBrightness = value;
       ledInfo?['ledBrightness'] = currentBrightness;
       userBox.put('ledInfo', ledInfo);
     });
+    try {
+      await ledInfoRef.update({
+        'ledBrightness': value,
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
-  void _colorChange(String value) {
+  Future<void> _colorChange(String value) async {
     List<String> color = value.split('-');
     setState(() {
       selectedColor = color[0];
@@ -74,6 +94,14 @@ class _LEDWidgetState extends State<LEDWidget> {
       ledInfo?['ledColorValue'] = selectedColorValue;
       userBox.put('ledInfo', ledInfo);
     });
+    try {
+      await ledInfoRef.update({
+        'ledColor': color[0],
+        'ledColorValue': color[1]
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override

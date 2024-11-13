@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:curtainslide/homePage.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -16,6 +17,7 @@ Future<void> main() async {
   );
   if (isLoggedIn()) {
     initializeService();
+    FirebaseDatabase.instance.databaseURL = 'https://curtainslide-test-default-rtdb.asia-southeast1.firebasedatabase.app';
   }
   runApp(const CurtainSlideApp());
 }
