@@ -17,7 +17,8 @@ Future<void> main() async {
   );
   if (isLoggedIn()) {
     initializeService();
-    FirebaseDatabase.instance.databaseURL = 'https://curtainslide-test-default-rtdb.asia-southeast1.firebasedatabase.app';
+    FirebaseDatabase.instance.databaseURL =
+        'https://curtainslide-test-default-rtdb.asia-southeast1.firebasedatabase.app';
   }
   runApp(const CurtainSlideApp());
 }
@@ -116,11 +117,53 @@ void startScheduleChecker(List<dynamic> schedules) {
   });
 }
 
+Future<void> updateLEDinRTDB(
+    DatabaseReference ledInfoRef, Map<String, dynamic> ledInfo) async {
+  try {
+    print(ledInfo);
+    await ledInfoRef.update({
+      'ledStatus': ledInfo['ledStatus'],
+      'ledColor': ledInfo['ledColor'],
+      'ledColorValue': ledInfo['ledColorValue'],
+      'ledBrightness': ledInfo['ledBrightness']
+    });
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future<void> updateCurtainStateInRTDB(
+    DatabaseReference curtainStateRef, int seconds) async {
+  try {
+    print(seconds);
+    await curtainStateRef.set(2);
+    await Future.delayed(Duration(seconds: 5));
+    if (seconds > 0) {
+      await curtainStateRef.set(0);
+      await Future.delayed(Duration(seconds: seconds));
+    }
+    await curtainStateRef.set(1);
+  } catch (e) {
+    print(e);
+  }
+}
+
 void updateCurtainSlideDetails(Map<String, dynamic> schedule) {
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+  FirebaseDatabase.instance.databaseURL =
+        'https://curtainslide-test-default-rtdb.asia-southeast1.firebasedatabase.app';
+  DatabaseReference ledInfoRef =
+      FirebaseDatabase.instance.ref('users/$userId/ledInfo');
+  DatabaseReference curtainStateRef =
+      FirebaseDatabase.instance.ref('users/$userId/curtainState');
+
   final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
   // update LED Info (must be turned into function for esp32 communication)
   Map<String, dynamic> ledInfo = schedule['ledInfo'];
   userBox.put('ledInfo', ledInfo);
+  double curtainState = schedule['curtainState'];
+  updateLEDinRTDB(ledInfoRef, ledInfo);
+  updateCurtainStateInRTDB(curtainStateRef, curtainState.toInt());
   print(userBox.values);
   // update curtain (must be turned into function for esp32 communication)
 }
