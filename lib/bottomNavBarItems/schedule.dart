@@ -8,11 +8,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 void restartService() async {
   final service = FlutterBackgroundService();
   service.invoke("stop");
-  if(!await service.isRunning()){
+  if (!await service.isRunning()) {
     print("background service is not running");
   }
   service.startService();
-  if(await service.isRunning()){
+  if (await service.isRunning()) {
     print("background service is now running");
   }
   service.invoke("updateScheds");
@@ -165,7 +165,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
     double schedLedBrightness = schedules[i]['ledInfo']['ledBrightness'];
     String schedSelectedColor = schedules[i]['ledInfo']['ledColor'];
     String schedSelectedColorValue = schedules[i]['ledInfo']['ledColorValue'];
-    double schedCurtainState = schedules[i]['curtainState'];
+    bool schedCloseCurtain = schedules[i]['curtainState'];
     String schedTime = schedules[i]['time'];
     List<String> parts = schedTime.split(":");
     int hour = int.parse(parts[0]);
@@ -200,7 +200,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                                   '${schedTimeTOD.hour.toString().padLeft(2, '0')}:${schedTimeTOD.minute.toString().padLeft(2, '0')}';
                               if (!checkIfTimeExists(schedules, schedTimeTOD)) {
                                 Map<String, dynamic> updatedData = {
-                                  'curtainState': schedCurtainState,
+                                  'curtainState': schedCloseCurtain,
                                   'ledInfo': {
                                     'ledStatus': schedLedState,
                                     'ledColor': schedSelectedColor,
@@ -389,36 +389,26 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Curtain State",
+                            "Curtain ",
                             style: actionTitleStyle,
                           ),
-                          SliderTheme(
-                            data: SliderTheme.of(context).copyWith(
-                              valueIndicatorTextStyle: const TextStyle(
-                                color: Colors.black,
-                              ),
-                              showValueIndicator: ShowValueIndicator
-                                  .always, // Always show the value indicator
-                            ),
-                            child: Slider(
-                              value: schedCurtainState,
-                              onChanged: (value) {
-                                setState(() {
-                                  schedCurtainState = value;
-                                });
-                              },
-                              max: 5,
-                              divisions: 5,
-                              label: schedCurtainState.round().toString(),
-                              activeColor: const Color(0xFFD9D9D9),
-                              inactiveColor: const Color(0xFF737373),
-                            ),
-                          )
+                          Switch(
+                            value: schedCloseCurtain,
+                            activeColor: const Color(0xFFd9d9d9),
+                            activeTrackColor: const Color(0xFF737373),
+                            inactiveThumbColor: const Color(0xFF737373),
+                            inactiveTrackColor: const Color(0xFF383838),
+                            onChanged: (value) {
+                              setState(() {
+                                schedCloseCurtain = value;
+                              });
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -482,6 +472,8 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
           normalMargin = const EdgeInsets.fromLTRB(24, 16, 24, 16);
         }
         String ledState = "";
+        bool schedCloseCurtain = schedules[i]['curtainState'];
+        String isCurtainToBeClosed = schedCloseCurtain ? "To Close" : "To Open";
         ledState = schedule[i]['ledInfo']['ledStatus'] ? "On" : "Off";
         String timeStr = schedule[i]['time'];
         List<String> parts = timeStr.split(":");
@@ -542,7 +534,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Curtain State: ${schedule[i]['curtainState'].round()}",
+                            "Curtain: $isCurtainToBeClosed",
                             style: scheduleDescStyle,
                           ),
                           Text(
@@ -617,4 +609,3 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
     );
   }
 }
-

@@ -16,6 +16,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
   String selectedColor = "Red";
   String selectedColorValue = "FF0000";
   double currentCurtainCloseness = 5;
+  bool toCloseCurtain = false;
   TimeOfDay selectedTime = TimeOfDay.now();
 
   final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
@@ -35,6 +36,12 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
   );
 
   List<dynamic> schedules = [];
+
+  void _toCloseCurtainChange(bool value) {
+    setState(() {
+      toCloseCurtain = value;
+    });
+  }
 
   void _ledChange(bool value) {
     setState(() {
@@ -87,7 +94,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
     // Create the map to add to the schedule
     final newScheduleEntry = {
       'curtainState':
-          currentCurtainCloseness, // Replace with your desired value
+          toCloseCurtain, // Replace with your desired value
       'time': timeString, // Get the current timestamp
       'ledInfo': {
         'ledBrightness': currentBrightness, // Replace with your desired value
@@ -316,7 +323,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
           ),
           Container(
             margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-            padding: const EdgeInsets.fromLTRB(16, 16, 4, 16),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: const Color(0xFF191919),
@@ -330,24 +337,14 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                       "Curtain",
                       style: actionTitleStyle,
                     ),
-                    SliderTheme(
-                      data: SliderTheme.of(context).copyWith(
-                        valueIndicatorTextStyle: const TextStyle(
-                          color: Colors.black,
-                        ),
-                        showValueIndicator: ShowValueIndicator
-                            .always, // Always show the value indicator
-                      ),
-                      child: Slider(
-                        value: currentCurtainCloseness,
-                        onChanged: _curtainCloseness,
-                        max: 5,
-                        divisions: 5,
-                        label: currentCurtainCloseness.round().toString(),
-                        activeColor: const Color(0xFFD9D9D9),
-                        inactiveColor: const Color(0xFF737373),
-                      ),
-                    )
+                    Switch(
+                      value: toCloseCurtain,
+                      activeColor: const Color(0xFFd9d9d9),
+                      activeTrackColor: const Color(0xFF737373),
+                      inactiveThumbColor: const Color(0xFF737373),
+                      inactiveTrackColor: const Color(0xFF383838),
+                      onChanged: _toCloseCurtainChange,
+                    ),
                   ],
                 ),
                 Container(
@@ -355,7 +352,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                   child: Row(
                     children: [
                       Text(
-                        "Sets the curtain's closeness. \nSlide to 0 if you want it open. \nSlide to 5 if you want it closed.",
+                        "Sets the curtain's state. \nToggle off to open the curtain. \nToggle on to close the curtain.",
                         style: actionDescriptionStyle,
                       ),
                     ],
@@ -382,7 +379,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                     ),
                     FilledButton.icon(
                       label: Text(MaterialLocalizations.of(context)
-                              .formatTimeOfDay(selectedTime)),
+                          .formatTimeOfDay(selectedTime)),
                       onPressed: () async {
                         var pickedTime = await showTimePicker(
                           context: context,

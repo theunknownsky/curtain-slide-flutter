@@ -117,9 +117,10 @@ void startScheduleChecker(List<dynamic> schedules) {
   });
 }
 
-Future<void> updateLEDinRTDB(
-    DatabaseReference ledInfoRef, Map<String, dynamic> ledInfo) async {
+Future<void> updateLEDinRTDB(String userId, Map<String, dynamic> ledInfo) async {
   try {
+    DatabaseReference ledInfoRef =
+        FirebaseDatabase.instance.ref('users/$userId/ledInfo');
     print(ledInfo);
     await ledInfoRef.update({
       'ledStatus': ledInfo['ledStatus'],
@@ -132,17 +133,32 @@ Future<void> updateLEDinRTDB(
   }
 }
 
-Future<void> updateCurtainStateInRTDB(
-    DatabaseReference curtainStateRef, int seconds) async {
+Future<void> updateCurtainStateInRTDB(String userId, bool closeCurtain) async {
+  DatabaseReference curtainStateRef =
+      FirebaseDatabase.instance.ref('users/$userId/curtainState');
+  DatabaseReference isCurtainClosedRef =
+      FirebaseDatabase.instance.ref('users/$userId/isCurtainClosed');
+  DatabaseReference isCurtainOpenedRef =
+      FirebaseDatabase.instance.ref('users/$userId/isCurtainOpened');
+  // make it depend on the bool value of the closeCurtain
   try {
-    print(seconds);
-    await curtainStateRef.set(2);
-    await Future.delayed(Duration(seconds: 5));
-    if (seconds > 0) {
-      await curtainStateRef.set(0);
-      await Future.delayed(Duration(seconds: seconds));
+    if (closeCurtain) {
+      final DatabaseEvent event = await isCurtainClosedRef.once();
+      final isCurtainClosed = event.snapshot.value;
+      if (isCurtainClosed is bool){
+        if (!isCurtainClosed){
+          curtainStateRef.set(0);
+        }
+      }
+    } else {
+      final DatabaseEvent event = await isCurtainOpenedRef.once();
+      final isCurtainOpened = event.snapshot.value;
+      if (isCurtainOpened is bool){
+        if (!isCurtainOpened){
+          curtainStateRef.set(2);
+        }
+      }
     }
-    await curtainStateRef.set(1);
   } catch (e) {
     print(e);
   }
@@ -151,19 +167,14 @@ Future<void> updateCurtainStateInRTDB(
 void updateCurtainSlideDetails(Map<String, dynamic> schedule) {
   String userId = FirebaseAuth.instance.currentUser!.uid;
   FirebaseDatabase.instance.databaseURL =
-        'https://curtainslide-test-default-rtdb.asia-southeast1.firebasedatabase.app';
-  DatabaseReference ledInfoRef =
-      FirebaseDatabase.instance.ref('users/$userId/ledInfo');
-  DatabaseReference curtainStateRef =
-      FirebaseDatabase.instance.ref('users/$userId/curtainState');
-
+      'https://curtainslide-test-default-rtdb.asia-southeast1.firebasedatabase.app';
   final userBox = Hive.box(FirebaseAuth.instance.currentUser!.uid);
   // update LED Info (must be turned into function for esp32 communication)
   Map<String, dynamic> ledInfo = schedule['ledInfo'];
   userBox.put('ledInfo', ledInfo);
-  double curtainState = schedule['curtainState'];
-  updateLEDinRTDB(ledInfoRef, ledInfo);
-  updateCurtainStateInRTDB(curtainStateRef, curtainState.toInt());
+  bool curtainState = schedule['curtainState'];
+  updateLEDinRTDB(userId, ledInfo);
+  updateCurtainStateInRTDB(userId, curtainState);
   print(userBox.values);
   // update curtain (must be turned into function for esp32 communication)
 }
