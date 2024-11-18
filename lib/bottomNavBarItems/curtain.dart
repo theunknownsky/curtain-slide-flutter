@@ -62,13 +62,6 @@ class _CurtainWidgetState extends State<CurtainWidget> {
   void _curtainStateChange(int curtainMoveState) {
     _manualCurtainStateChange(curtainMoveState);
     updateCurtainState(curtainMoveState);
-    Timer(Duration(seconds: delay), () {
-      setState(() {
-        _manualCurtainStateChange(1);
-        updateCurtainState(1);
-        actionBlock = false;
-      });
-    });
   }
 
   void checkIfAlreadyClosed() async {
@@ -80,8 +73,9 @@ class _CurtainWidgetState extends State<CurtainWidget> {
         if (data is bool) {
           setState(() {
             isCurtainAlreadyClosed = data;
-            if(isCurtainAlreadyClosed){
+            if (isCurtainAlreadyClosed) {
               actionBlock = false;
+              _manualCurtainStateChange(1);
             }
           });
         }
@@ -98,8 +92,9 @@ class _CurtainWidgetState extends State<CurtainWidget> {
         if (data is bool) {
           setState(() {
             isCurtainAlreadyOpened = data;
-            if(isCurtainAlreadyOpened){
+            if (isCurtainAlreadyOpened) {
               actionBlock = false;
+              _manualCurtainStateChange(1);
             }
           });
         }
@@ -342,16 +337,28 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                         ),
                       ),
                       onLongPress: () {
-                        _manualCurtainStateChange(0);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Closing curtain...",
-                              style: notifStyle,
+                        if (!isCurtainAlreadyClosed) {
+                          _manualCurtainStateChange(0);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Closing curtain...",
+                                style: notifStyle,
+                              ),
+                              duration: Duration(seconds: delay),
                             ),
-                            duration: Duration(seconds: delay),
-                          ),
-                        );
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Curtain is already closed.",
+                                style: notifStyle,
+                              ),
+                              duration: Duration(seconds: delay),
+                            ),
+                          );
+                        }
                       },
                       onLongPressUp: () {
                         _manualCurtainStateChange(1);
@@ -411,16 +418,28 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                         ),
                       ),
                       onLongPress: () {
-                        _manualCurtainStateChange(2);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Opening curtain...",
-                              style: notifStyle,
+                        if (!isCurtainAlreadyOpened) {
+                          _manualCurtainStateChange(2);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Opening curtain...",
+                                style: notifStyle,
+                              ),
+                              duration: Duration(seconds: delay),
                             ),
-                            duration: Duration(seconds: delay),
-                          ),
-                        );
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Curtain is already opened.",
+                                style: notifStyle,
+                              ),
+                              duration: Duration(seconds: delay),
+                            ),
+                          );
+                        }
                       },
                       onLongPressUp: () {
                         _manualCurtainStateChange(1);
