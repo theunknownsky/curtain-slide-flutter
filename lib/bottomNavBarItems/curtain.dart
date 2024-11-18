@@ -16,11 +16,16 @@ class _CurtainWidgetState extends State<CurtainWidget> {
 
   late String userId;
   late DatabaseReference curtainStateRef;
+  late bool isCurtainAlreadyClosed;
+  late bool isCurtainAlreadyOpened;
 
   void initState() {
     super.initState();
     userId = FirebaseAuth.instance.currentUser!.uid;
-    curtainStateRef = FirebaseDatabase.instance.ref('users/$userId/curtainState');
+    curtainStateRef =
+        FirebaseDatabase.instance.ref('users/$userId/curtainState');
+    checkIfAlreadyClosed();
+    checkIfAlreadyOpened();
   }
 
   TextStyle actionTitleStyle = const TextStyle(
@@ -64,6 +69,49 @@ class _CurtainWidgetState extends State<CurtainWidget> {
         actionBlock = false;
       });
     });
+  }
+
+  void checkIfAlreadyClosed() async {
+    DatabaseReference isCurtainClosedRef =
+        FirebaseDatabase.instance.ref('users/$userId/isCurtainClosed');
+    isCurtainClosedRef.onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data is bool) {
+          setState(() {
+            isCurtainAlreadyClosed = data;
+            if(isCurtainAlreadyClosed){
+              actionBlock = false;
+            }
+          });
+        }
+      }
+    });
+  }
+
+  void checkIfAlreadyOpened() async {
+    DatabaseReference isCurtainOpenedRef =
+        FirebaseDatabase.instance.ref('users/$userId/isCurtainOpened');
+    isCurtainOpenedRef.onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data is bool) {
+          setState(() {
+            isCurtainAlreadyOpened = data;
+            if(isCurtainAlreadyOpened){
+              actionBlock = false;
+            }
+          });
+        }
+      }
+    });
+    final DatabaseEvent event = await isCurtainOpenedRef.once();
+    final isCurtainOpened = event.snapshot.value;
+    if (isCurtainOpened is bool) {
+      setState(() {
+        isCurtainAlreadyOpened = isCurtainOpened;
+      });
+    }
   }
 
   void _manualCurtainStateChange(int curtainMoveState) {
@@ -122,19 +170,31 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                     FilledButton.icon(
                       label: const Text("Close"),
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Closing curtain...",
-                              style: notifStyle,
+                        if (!isCurtainAlreadyClosed) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Closing curtain...",
+                                style: notifStyle,
+                              ),
+                              duration: Duration(seconds: delay),
                             ),
-                            duration: Duration(seconds: delay),
-                          ),
-                        );
-                        setState(() {
-                          actionBlock = true;
-                        });
-                        _curtainStateChange(0);
+                          );
+                          setState(() {
+                            actionBlock = true;
+                          });
+                          _curtainStateChange(0);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Curtain is already closed.",
+                                style: notifStyle,
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor:
@@ -187,24 +247,31 @@ class _CurtainWidgetState extends State<CurtainWidget> {
                     FilledButton.icon(
                       label: const Text("Open"),
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Opening curtain...",
-                              style: notifStyle,
+                        if (!isCurtainAlreadyOpened) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Opening curtain...",
+                                style: notifStyle,
+                              ),
+                              duration: Duration(seconds: delay),
                             ),
-                            duration: Duration(seconds: delay),
-                          ),
-                        );
-                        setState(() {
-                          actionBlock = true;
-                        });
-                        _curtainStateChange(2);
-                        Timer(Duration(seconds: delay), () {
+                          );
                           setState(() {
-                            actionBlock = false;
+                            actionBlock = true;
                           });
-                        });
+                          _curtainStateChange(2);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Curtain is already opened.",
+                                style: notifStyle,
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor:
