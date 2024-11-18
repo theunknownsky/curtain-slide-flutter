@@ -18,7 +18,10 @@ class _CurtainWidgetState extends State<CurtainWidget> {
   late DatabaseReference curtainStateRef;
   late bool isCurtainAlreadyClosed;
   late bool isCurtainAlreadyOpened;
+  StreamSubscription? isCurtainClosedSubscription;
+  StreamSubscription? isCurtainOpenedSubscription;
 
+  @override
   void initState() {
     super.initState();
     userId = FirebaseAuth.instance.currentUser!.uid;
@@ -26,6 +29,13 @@ class _CurtainWidgetState extends State<CurtainWidget> {
         FirebaseDatabase.instance.ref('users/$userId/curtainState');
     checkIfAlreadyClosed();
     checkIfAlreadyOpened();
+  }
+
+  @override
+  void dispose(){
+    isCurtainClosedSubscription?.cancel();
+    isCurtainOpenedSubscription?.cancel();
+    super.dispose();
   }
 
   TextStyle actionTitleStyle = const TextStyle(
@@ -67,7 +77,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
   void checkIfAlreadyClosed() async {
     DatabaseReference isCurtainClosedRef =
         FirebaseDatabase.instance.ref('users/$userId/isCurtainClosed');
-    isCurtainClosedRef.onValue.listen((event) {
+    isCurtainClosedSubscription = isCurtainClosedRef.onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data is bool) {
@@ -86,7 +96,7 @@ class _CurtainWidgetState extends State<CurtainWidget> {
   void checkIfAlreadyOpened() async {
     DatabaseReference isCurtainOpenedRef =
         FirebaseDatabase.instance.ref('users/$userId/isCurtainOpened');
-    isCurtainOpenedRef.onValue.listen((event) {
+    isCurtainOpenedSubscription = isCurtainOpenedRef.onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data is bool) {
