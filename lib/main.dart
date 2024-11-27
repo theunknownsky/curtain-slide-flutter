@@ -25,8 +25,11 @@ Future<void> main() async {
 
 Future<void> initializeService() async {
   final service = FlutterBackgroundService();
-
   service.startService();
+  print("Initialize Service function used.");
+  if(await service.isRunning()){
+    print("BGServ now running.");
+  }
   await service.configure(
     iosConfiguration: IosConfiguration(
       autoStart: false,
@@ -34,7 +37,7 @@ Future<void> initializeService() async {
       onBackground: onIosBackground,
     ),
     androidConfiguration: AndroidConfiguration(
-      autoStart: false,
+      autoStart: true,
       onStart: onStart,
       isForegroundMode: false,
       autoStartOnBoot: true,
@@ -50,6 +53,7 @@ Future<bool> onIosBackground(ServiceInstance service) async {
   return true;
 }
 
+@pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

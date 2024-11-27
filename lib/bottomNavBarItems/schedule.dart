@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ui';
+import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -11,10 +11,7 @@ void restartService() async {
   if (!await service.isRunning()) {
     print("background service is not running");
   }
-  service.startService();
-  if (await service.isRunning()) {
-    print("background service is now running");
-  }
+  initializeService();
   service.invoke("updateScheds");
 }
 

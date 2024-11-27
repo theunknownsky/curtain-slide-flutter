@@ -1,12 +1,11 @@
-import 'dart:ui';
 import 'package:curtainslide/bottomNavBarItems/account.dart';
 import 'package:curtainslide/bottomNavBarItems/addSchedule.dart';
 import 'package:curtainslide/bottomNavBarItems/curtain.dart';
 import 'package:curtainslide/bottomNavBarItems/led.dart';
 import 'package:curtainslide/bottomNavBarItems/schedule.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> initUserBox() async {
@@ -46,6 +45,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    FirebaseDatabase.instance.databaseURL =
+      'https://curtainslide-test-default-rtdb.asia-southeast1.firebasedatabase.app';
     initUserBox();
   }
 
