@@ -194,6 +194,10 @@ class _LEDWidgetState extends State<LEDWidget> {
                           },
                           items: const [
                             DropdownMenuItem(
+                              value: "White-FFFFFF",
+                              child: Text("White"),
+                            ),
+                            DropdownMenuItem(
                               value: "Red-FF0000",
                               child: Text("Red"),
                             ),
