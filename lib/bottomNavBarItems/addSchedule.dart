@@ -249,7 +249,7 @@ class _AddScheduleWidgetState extends State<AddScheduleWidget> {
                               child: Text("Indigo"),
                             ),
                             DropdownMenuItem(
-                              value: "Violet-EE82EE",
+                              value: "Violet-7F00FF",
                               child: Text("Violet"),
                             ),
                           ],

@@ -222,7 +222,7 @@ class _LEDWidgetState extends State<LEDWidget> {
                               child: Text("Indigo"),
                             ),
                             DropdownMenuItem(
-                              value: "Violet-EE82EE",
+                              value: "Violet-7F00FF",
                               child: Text("Violet"),
                             ),
                           ],
